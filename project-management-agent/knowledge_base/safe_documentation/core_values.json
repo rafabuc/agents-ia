@@ -1,0 +1,21 @@
+{
+  "alignment": {
+    "definition": "Everyone understands how their work supports business objectives",
+    "description": "Alignment keeps teams working toward common goals and priorities",
+    "practices": [
+      "Clear vision and strategy communication",
+      "Regular PI Planning events",
+      "Transparent decision-making processes"
+    ]
+  },
+  "built_in_quality": {
+    "definition": "Quality is built into every increment of work",
+    "description": "Quality practices are embedded throughout development",
+    "practices": [
+      "Test-driven development",
+      "Continuous integration",
+      "Definition of Done",
+      "Automated testing"
+    ]
+  }
+}

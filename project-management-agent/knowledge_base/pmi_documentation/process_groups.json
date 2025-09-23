@@ -1,0 +1,27 @@
+{
+  "initiating": {
+    "definition": "Processes to define a new project or phase",
+    "key_processes": [
+      "Develop Project Charter",
+      "Identify Stakeholders"
+    ],
+    "outputs": [
+      "Project Charter",
+      "Stakeholder Register"
+    ]
+  },
+  "planning": {
+    "definition": "Processes to establish scope and define actions",
+    "key_processes": [
+      "Develop Project Management Plan",
+      "Plan Scope Management",
+      "Create WBS",
+      "Plan Schedule Management"
+    ],
+    "outputs": [
+      "Project Management Plan",
+      "Work Breakdown Structure",
+      "Schedule Baseline"
+    ]
+  }
+}

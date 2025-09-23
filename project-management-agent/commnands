@@ -1,0 +1,27 @@
+conda create -n pm-agent python=3.11
+
+# Crear entorno con Python 3.11 (recomendado)
+conda create -n pm-agent python=3.11
+
+# Activar entorno
+conda activate pm-agent
+
+# Verificar versión
+python --version
+
+
+
+
+##############
+
+
+# Eliminar entorno si existe
+conda env remove -n pm-agent -y
+
+# Limpiar cachés
+conda clean --all -y
+pip cache purge
+
+
+pip install chromadb  # Solo si necesitas RAG
+pip install streamlit  # Solo si necesitas web interface
