@@ -1,0 +1,28 @@
+
+# Archivos de variables de entorno
+.env
+**/.env
+**/.env.*
+!.env.example
+
+# Directorios de caché de Python
+**/__pycache__/
+
+# Archivos de configuración local
+.env.local
+**/.env.local
+
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Instalaciones de Python
+*.egg-info/
+.eggs/
