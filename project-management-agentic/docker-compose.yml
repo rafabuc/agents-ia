@@ -1,0 +1,32 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  pmp-system:
+    build: .
+    container_name: pmp-multiagent
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./.env:/app/.env
+    environment:
+      - DATABASE_URL=sqlite:///./data/pmp_system.db
+    ports:
+      - "8000:8000"
+    command: python main.py chat
+
+  # Opcional: PostgreSQL
+  postgres:
+    image: postgres:15
+    container_name: pmp-postgres
+    environment:
+      POSTGRES_DB: pmp_system
+      POSTGRES_USER: pmp_user
+      POSTGRES_PASSWORD: pmp_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:

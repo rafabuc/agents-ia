@@ -1,0 +1,25 @@
+# Desinstalar versiones problemáticas
+pip uninstall -y langgraph langchain langchain-core langchain-community langchain-openai langchain-anthropic
+
+# Instalar versiones específicas compatibles (sin advertencias)
+pip install langchain-core==0.1.52
+pip install langchain==0.1.20  
+pip install langchain-community==0.0.38
+pip install langchain-openai==0.1.8
+pip install langchain-anthropic==0.1.15
+pip install langgraph==0.0.55
+
+
+
+
+# Crear tu primer proyecto
+python main.py create-project "Proyecto IA Avanzado" --description "Sistema inteligente de gestión" --methodology PMP
+
+# Ver proyectos creados
+python main.py list-projects
+
+# Demo completo
+python main.py demo
+
+# Estado del sistema (sin errores)
+python main.py status

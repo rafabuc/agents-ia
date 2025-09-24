@@ -1,0 +1,63 @@
+2025-09-24 13:10:03 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 13:10:03 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 13:10:03 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 13:10:03 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 13:10:03 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 13:10:06 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 13:10:06 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 13:10:06 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 13:10:06 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 13:13:55 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 13:13:55 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 13:13:55 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 13:13:55 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 13:13:55 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 13:13:58 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 13:13:58 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 13:13:58 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 13:13:58 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 13:14:23 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 13:14:23 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 13:14:23 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 13:14:23 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 13:14:23 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 13:14:27 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 13:14:27 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 13:14:27 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 13:14:27 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 13:17:20 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 13:17:20 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 13:17:20 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 13:17:20 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 13:17:20 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 13:17:23 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 13:17:23 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 13:17:23 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 13:17:23 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 13:18:31 | ERROR    | workflows.workflow_manager:execute_workflow:83 - Workflow custom_20250924_131831_815274 failed: 'coroutine' object has no attribute 'get'
+2025-09-24 13:18:42 | ERROR    | workflows.workflow_manager:execute_workflow:83 - Workflow custom_20250924_131842_501300 failed: 'coroutine' object has no attribute 'get'
+2025-09-24 13:18:59 | ERROR    | workflows.workflow_manager:execute_workflow:83 - Workflow custom_20250924_131859_161234 failed: 'coroutine' object has no attribute 'get'
+2025-09-24 13:19:49 | ERROR    | workflows.workflow_manager:execute_workflow:83 - Workflow custom_20250924_131949_145352 failed: 'coroutine' object has no attribute 'get'
+2025-09-24 13:23:27 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 13:23:27 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 13:23:27 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 13:23:27 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 13:23:27 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 13:23:29 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 13:23:29 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 13:23:29 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 13:23:29 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 13:23:39 | ERROR    | workflows.workflow_manager:execute_workflow:83 - Workflow custom_20250924_132339_444081 failed: 'coroutine' object has no attribute 'get'
+2025-09-24 13:24:11 | ERROR    | workflows.workflow_manager:execute_workflow:83 - Workflow custom_20250924_132411_340010 failed: 'coroutine' object has no attribute 'get'
+2025-09-24 13:28:12 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 13:28:12 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 13:28:12 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 13:28:12 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 13:28:12 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 13:28:15 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 13:28:15 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 13:28:15 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 13:28:15 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 13:28:29 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 13:28:29 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 13:28:29 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project

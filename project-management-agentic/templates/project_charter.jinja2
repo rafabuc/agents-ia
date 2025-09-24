@@ -1,0 +1,532 @@
+# templates/project_charter.jinja2
+{# Project Charter Template #}
+{# Description: Comprehensive project charter following PMP standards #}
+
+# PROJECT CHARTER
+
+## PROJECT INFORMATION
+- **Project Name:** {{ project_name }}
+- **Project Code:** {{ project_code | default('TBD') }}
+- **Project Manager:** {{ project_manager | default('TBD') }}
+- **Project Sponsor:** {{ sponsor | default('TBD') }}
+- **Start Date:** {{ start_date | default('TBD') }}
+- **Expected End Date:** {{ end_date | default('TBD') }}
+- **Total Budget:** {{ budget | default('TBD') }}
+
+## PROJECT DESCRIPTION
+{{ description | default('Project description to be defined') }}
+
+## BUSINESS CASE
+{{ business_case | default('Business justification to be provided') }}
+
+## PROJECT OBJECTIVES
+{% if objectives %}
+{% for objective in objectives %}
+- {{ objective }}
+{% endfor %}
+{% else %}
+- Primary objective to be defined
+- Secondary objectives to be identified
+{% endif %}
+
+## SUCCESS CRITERIA
+{% if success_criteria %}
+{% for criterion in success_criteria %}
+- {{ criterion }}
+{% endfor %}
+{% else %}
+- Success criteria to be defined
+{% endif %}
+
+## PROJECT SCOPE
+
+### In Scope:
+{% if scope_inclusions %}
+{% for item in scope_inclusions %}
+- {{ item }}
+{% endfor %}
+{% else %}
+- Scope inclusions to be defined
+{% endif %}
+
+### Out of Scope:
+{% if scope_exclusions %}
+{% for item in scope_exclusions %}
+- {{ item }}
+{% endfor %}
+{% else %}
+- Scope exclusions to be defined
+{% endif %}
+
+## HIGH-LEVEL REQUIREMENTS
+{% if requirements %}
+{% for requirement in requirements %}
+- {{ requirement }}
+{% endfor %}
+{% else %}
+- Requirements to be gathered and documented
+{% endif %}
+
+## MAJOR DELIVERABLES
+{% if deliverables %}
+| Deliverable | Description | Due Date |
+|-------------|-------------|----------|
+{% for deliverable in deliverables %}
+| {{ deliverable.name }} | {{ deliverable.description }} | {{ deliverable.due_date | default('TBD') }} |
+{% endfor %}
+{% else %}
+- Major deliverables to be identified
+{% endif %}
+
+## HIGH-LEVEL RISKS
+{% if risks %}
+{% for risk in risks %}
+- **{{ risk.name }}:** {{ risk.description }} ({{ risk.impact | default('Medium') }} impact)
+{% endfor %}
+{% else %}
+- Risk identification to be conducted
+{% endif %}
+
+## ASSUMPTIONS
+{% if assumptions %}
+{% for assumption in assumptions %}
+- {{ assumption }}
+{% endfor %}
+{% else %}
+- Project assumptions to be documented
+{% endif %}
+
+## CONSTRAINTS
+{% if constraints %}
+{% for constraint in constraints %}
+- {{ constraint }}
+{% endfor %}
+{% else %}
+- Project constraints to be identified
+{% endif %}
+
+## PROJECT ORGANIZATION
+
+### Key Stakeholders
+{% if stakeholders %}
+| Name | Role | Organization | Influence | Interest |
+|------|------|--------------|-----------|----------|
+{% for stakeholder in stakeholders %}
+| {{ stakeholder.name }} | {{ stakeholder.role }} | {{ stakeholder.organization }} | {{ stakeholder.influence | default('Medium') }} | {{ stakeholder.interest | default('Medium') }} |
+{% endfor %}
+{% else %}
+- Stakeholder analysis to be completed
+{% endif %}
+
+## AUTHORIZATION
+- **Project Manager Signature:** _______________ **Date:** ___________
+- **Project Sponsor Signature:** _______________ **Date:** ___________
+
+---
+*Document Version:* {{ version | default('1.0') }}
+*Created On:* {{ created_date | default('TBD') }}
+*Last Updated:* {{ updated_date | default('TBD') }}
+
+# templates/wbs_template.jinja2
+{# Work Breakdown Structure Template #}
+{# Description: Hierarchical WBS following PMP standards #}
+
+# WORK BREAKDOWN STRUCTURE (WBS)
+**Project:** {{ project_name }}
+**WBS Version:** {{ version | default('1.0') }}
+**Date:** {{ created_date | default('TBD') }}
+
+## 1.0 {{ project_name | upper }}
+
+### 1.1 Project Management
+{% if project_management %}
+{% for item in project_management %}
+    {{ loop.index }}.1.{{ loop.index }} {{ item }}
+{% endfor %}
+{% else %}
+    1.1.1 Project Planning
+    1.1.2 Project Monitoring & Control  
+    1.1.3 Risk Management
+    1.1.4 Change Management
+    1.1.5 Project Closure
+{% endif %}
+
+### 1.2 Requirements & Analysis
+{% if requirements_analysis %}
+{% for item in requirements_analysis %}
+    1.2.{{ loop.index }} {{ item }}
+{% endfor %}
+{% else %}
+    1.2.1 Requirements Gathering
+    1.2.2 Requirements Analysis
+    1.2.3 Requirements Documentation
+    1.2.4 Requirements Validation
+{% endif %}
+
+{% if custom_phases %}
+{% for phase in custom_phases %}
+### 1.{{ loop.index + 2 }} {{ phase.name }}
+{% for deliverable in phase.deliverables %}
+    1.{{ loop0.index + 2 }}.{{ loop.index }} {{ deliverable }}
+{% endfor %}
+{% endfor %}
+{% else %}
+### 1.3 Design & Development
+    1.3.1 System Design
+    1.3.2 Detailed Design
+    1.3.3 Development
+    1.3.4 Code Review
+
+### 1.4 Testing & Quality Assurance
+    1.4.1 Test Planning
+    1.4.2 Unit Testing
+    1.4.3 Integration Testing
+    1.4.4 System Testing
+    1.4.5 User Acceptance Testing
+
+### 1.5 Implementation & Deployment
+    1.5.1 Deployment Planning
+    1.5.2 Environment Setup
+    1.5.3 Data Migration
+    1.5.4 Go-Live Activities
+    1.5.5 Post-Implementation Support
+{% endif %}
+
+## WBS DICTIONARY
+
+{% if wbs_dictionary %}
+{% for item in wbs_dictionary %}
+### {{ item.wbs_id }} - {{ item.name }}
+- **Description:** {{ item.description }}
+- **Deliverables:** {{ item.deliverables | join(', ') }}
+- **Duration:** {{ item.duration | default('TBD') }}
+- **Resources:** {{ item.resources | default('TBD') }}
+- **Dependencies:** {{ item.dependencies | default('None identified') }}
+
+{% endfor %}
+{% else %}
+*WBS Dictionary to be completed for each work package*
+{% endif %}
+
+---
+*Document Version:* {{ version | default('1.0') }}
+*Last Updated:* {{ updated_date | default('TBD') }}
+
+# templates/cost_estimate.jinja2
+{# Cost Estimate Template #}
+{# Description: Detailed cost estimate with breakdown #}
+
+# PROJECT COST ESTIMATE
+
+**Project:** {{ project_name }}
+**Estimate Type:** {{ estimate_type | default('Preliminary') }}
+**Estimation Method:** {{ method | default('Bottom-up') }}
+**Date:** {{ estimate_date | default('TBD') }}
+**Estimator:** {{ estimator | default('TBD') }}
+
+## EXECUTIVE SUMMARY
+- **Total Project Cost:** ${{ total_cost | default('TBD') | number_format }}
+- **Contingency Reserve:** ${{ contingency | default('TBD') | number_format }}
+- **Management Reserve:** ${{ management_reserve | default('TBD') | number_format }}
+- **Total Budget Requirement:** ${{ total_budget | default('TBD') | number_format }}
+
+## COST BREAKDOWN BY CATEGORY
+
+### Labor Costs
+{% if labor_costs %}
+| Resource Type | Hours | Rate/Hour | Total Cost |
+|---------------|-------|-----------|------------|
+{% for labor in labor_costs %}
+| {{ labor.type }} | {{ labor.hours }} | ${{ labor.rate }} | ${{ labor.total | number_format }} |
+{% endfor %}
+| **TOTAL LABOR** | | | **${{ labor_total | number_format }}** |
+{% else %}
+- Labor cost breakdown to be determined
+{% endif %}
+
+### Material Costs
+{% if material_costs %}
+| Item | Quantity | Unit Cost | Total Cost |
+|------|----------|-----------|------------|
+{% for material in material_costs %}
+| {{ material.item }} | {{ material.quantity }} | ${{ material.unit_cost }} | ${{ material.total | number_format }} |
+{% endfor %}
+| **TOTAL MATERIALS** | | | **${{ materials_total | number_format }}** |
+{% else %}
+- Material cost breakdown to be determined
+{% endif %}
+
+### Equipment Costs
+{% if equipment_costs %}
+| Equipment | Duration | Rate | Total Cost |
+|-----------|----------|------|------------|
+{% for equipment in equipment_costs %}
+| {{ equipment.item }} | {{ equipment.duration }} | ${{ equipment.rate }} | ${{ equipment.total | number_format }} |
+{% endfor %}
+| **TOTAL EQUIPMENT** | | | **${{ equipment_total | number_format }}** |
+{% else %}
+- Equipment cost breakdown to be determined
+{% endif %}
+
+### Other Costs
+{% if other_costs %}
+{% for cost in other_costs %}
+- {{ cost.category }}: ${{ cost.amount | number_format }}
+{% endfor %}
+**Total Other Costs:** ${{ other_total | number_format }}
+{% else %}
+- Other costs to be identified
+{% endif %}
+
+## COST BY WBS ELEMENT
+{% if wbs_costs %}
+| WBS ID | Work Package | Cost |
+|--------|--------------|------|
+{% for wbs in wbs_costs %}
+| {{ wbs.id }} | {{ wbs.name }} | ${{ wbs.cost | number_format }} |
+{% endfor %}
+{% else %}
+- WBS cost allocation to be completed
+{% endif %}
+
+## ASSUMPTIONS
+{% if assumptions %}
+{% for assumption in assumptions %}
+- {{ assumption }}
+{% endfor %}
+{% else %}
+- Estimation assumptions to be documented
+{% endif %}
+
+## ACCURACY AND CONFIDENCE
+- **Estimation Accuracy:** {{ accuracy | default('±25%') }}
+- **Confidence Level:** {{ confidence | default('Medium') }}
+- **Basis of Estimate:** {{ basis | default('Historical data and expert judgment') }}
+
+## COST MANAGEMENT APPROACH
+- **Cost Control Method:** {{ control_method | default('Earned Value Management') }}
+- **Reporting Frequency:** {{ reporting_frequency | default('Monthly') }}
+- **Variance Threshold:** {{ variance_threshold | default('±10%') }}
+
+---
+*Estimate Version:* {{ version | default('1.0') }}
+*Prepared By:* {{ estimator | default('TBD') }}
+*Review Date:* {{ review_date | default('TBD') }}
+
+# templates/risk_register.jinja2
+{# Risk Register Template #}
+{# Description: Comprehensive risk register following PMP standards #}
+
+# PROJECT RISK REGISTER
+
+**Project:** {{ project_name }}
+**Risk Register Version:** {{ version | default('1.0') }}
+**Date:** {{ created_date | default('TBD') }}
+**Risk Manager:** {{ risk_manager | default('Project Manager') }}
+
+## RISK SUMMARY
+- **Total Risks Identified:** {{ total_risks | default('TBD') }}
+- **High Priority Risks:** {{ high_risks | default('TBD') }}
+- **Medium Priority Risks:** {{ medium_risks | default('TBD') }}
+- **Low Priority Risks:** {{ low_risks | default('TBD') }}
+
+## RISK REGISTER
+
+{% if risks %}
+{% for risk in risks %}
+### Risk ID: {{ risk.id }}
+- **Risk Description:** {{ risk.description }}
+- **Category:** {{ risk.category }}
+- **Probability:** {{ risk.probability }} ({{ risk.probability_score }}/5)
+- **Impact:** {{ risk.impact }} ({{ risk.impact_score }}/5)
+- **Risk Score:** {{ risk.score }} ({{ risk.priority }})
+- **Root Cause:** {{ risk.root_cause | default('To be analyzed') }}
+- **Triggers:** {{ risk.triggers | default('To be identified') }}
+- **Owner:** {{ risk.owner | default('TBD') }}
+- **Response Strategy:** {{ risk.response | default('To be determined') }}
+- **Response Actions:** 
+  {% if risk.actions %}
+  {% for action in risk.actions %}
+  - {{ action }}
+  {% endfor %}
+  {% else %}
+  - Response actions to be defined
+  {% endif %}
+- **Status:** {{ risk.status | default('Open') }}
+- **Target Date:** {{ risk.target_date | default('TBD') }}
+
+---
+{% endfor %}
+{% else %}
+*Risk identification workshop to be conducted*
+{% endif %}
+
+## RISK ASSESSMENT CRITERIA
+
+### Probability Scale
+| Level | Description | Score |
+|-------|-------------|-------|
+| Very High | Almost certain (90%+) | 5 |
+| High | Likely (70-89%) | 4 |
+| Medium | Possible (30-69%) | 3 |
+| Low | Unlikely (10-29%) | 2 |
+| Very Low | Very unlikely (<10%) | 1 |
+
+### Impact Scale
+| Level | Description | Score |
+|-------|-------------|-------|
+| Very High | Severe impact on objectives | 5 |
+| High | Major impact on objectives | 4 |
+| Medium | Moderate impact on objectives | 3 |
+| Low | Minor impact on objectives | 2 |
+| Very Low | Minimal impact on objectives | 1 |
+
+### Risk Priority Matrix
+- **High (15-25):** Immediate action required
+- **Medium (5-14):** Action plan needed
+- **Low (1-4):** Monitor and review
+
+## RISK RESPONSE STRATEGIES
+- **Avoid:** Eliminate the threat
+- **Mitigate:** Reduce probability or impact
+- **Transfer:** Shift responsibility to third party
+- **Accept:** Acknowledge and monitor
+- **Exploit:** Ensure positive risk occurs (opportunities)
+- **Enhance:** Increase probability/impact of opportunities
+
+---
+*Register Version:* {{ version | default('1.0') }}
+*Last Updated:* {{ updated_date | default('TBD') }}
+*Next Review:* {{ next_review | default('TBD') }}
+
+# templates/communication_plan.jinja2  
+{# Communication Plan Template #}
+{# Description: Stakeholder communication plan #}
+
+# PROJECT COMMUNICATION PLAN
+
+**Project:** {{ project_name }}
+**Plan Version:** {{ version | default('1.0') }}
+**Date:** {{ created_date | default('TBD') }}
+**Communication Manager:** {{ comm_manager | default('Project Manager') }}
+
+## COMMUNICATION OBJECTIVES
+{% if objectives %}
+{% for objective in objectives %}
+- {{ objective }}
+{% endfor %}
+{% else %}
+- Ensure timely and accurate information flow
+- Keep stakeholders informed and engaged
+- Facilitate effective decision making
+- Maintain project transparency
+{% endif %}
+
+## STAKEHOLDER COMMUNICATION MATRIX
+
+{% if stakeholder_matrix %}
+| Stakeholder | Information Needs | Frequency | Method | Format | Responsible |
+|-------------|-------------------|-----------|---------|---------|-------------|
+{% for stakeholder in stakeholder_matrix %}
+| {{ stakeholder.name }} | {{ stakeholder.info_needs }} | {{ stakeholder.frequency }} | {{ stakeholder.method }} | {{ stakeholder.format }} | {{ stakeholder.responsible }} |
+{% endfor %}
+{% else %}
+| Project Sponsor | Status, Issues, Decisions | Weekly | Email/Meeting | Status Report | PM |
+| Steering Committee | Progress, Risks, Budget | Monthly | Meeting | Dashboard | PM |
+| Project Team | Tasks, Updates, Issues | Daily | Standup | Verbal | PM |
+| End Users | Progress, Training, Changes | Bi-weekly | Newsletter | Email | PM |
+{% endif %}
+
+## COMMUNICATION METHODS
+
+### Meetings
+{% if meetings %}
+{% for meeting in meetings %}
+- **{{ meeting.name }}**
+  - Frequency: {{ meeting.frequency }}
+  - Duration: {{ meeting.duration }}
+  - Participants: {{ meeting.participants }}
+  - Purpose: {{ meeting.purpose }}
+{% endfor %}
+{% else %}
+- **Project Kickoff:** One-time, All stakeholders
+- **Status Meetings:** Weekly, Core team
+- **Steering Committee:** Monthly, Leadership
+- **Sprint Reviews:** Bi-weekly, Development team + stakeholders
+{% endif %}
+
+### Reports
+{% if reports %}
+{% for report in reports %}
+- **{{ report.name }}**
+  - Frequency: {{ report.frequency }}  
+  - Recipients: {{ report.recipients }}
+  - Content: {{ report.content }}
+{% endfor %}
+{% else %}
+- **Status Report:** Weekly, Sponsor and key stakeholders
+- **Dashboard:** Real-time, All stakeholders
+- **Risk Report:** Monthly, Risk owners and management
+{% endif %}
+
+### Communication Tools
+{% if tools %}
+{% for tool in tools %}
+- **{{ tool.name }}:** {{ tool.purpose }}
+{% endfor %}
+{% else %}
+- **Project Management Software:** Task tracking and collaboration
+- **Email:** Formal communications and announcements  
+- **Instant Messaging:** Quick updates and team coordination
+- **Video Conferencing:** Remote meetings and presentations
+- **Document Repository:** Centralized document storage
+{% endif %}
+
+## ESCALATION PROCEDURES
+
+{% if escalation %}
+{% for level in escalation %}
+### Level {{ loop.index }}: {{ level.name }}
+- **When to Escalate:** {{ level.criteria }}
+- **Escalate To:** {{ level.target }}
+- **Timeline:** {{ level.timeline }}
+- **Method:** {{ level.method }}
+{% endfor %}
+{% else %}
+### Level 1: Team Issues
+- **When:** Resource conflicts, minor scope issues
+- **Escalate To:** Team Lead
+- **Timeline:** Immediate
+- **Method:** Direct communication
+
+### Level 2: Project Issues  
+- **When:** Schedule delays, budget overruns, scope changes
+- **Escalate To:** Project Manager
+- **Timeline:** Within 24 hours
+- **Method:** Email + Meeting
+
+### Level 3: Major Issues
+- **When:** Critical risks, major scope changes, stakeholder conflicts
+- **Escalate To:** Project Sponsor
+- **Timeline:** Within 48 hours  
+- **Method:** Formal meeting + documentation
+{% endif %}
+
+## COMMUNICATION GUIDELINES
+{% if guidelines %}
+{% for guideline in guidelines %}
+- {{ guideline }}
+{% endfor %}
+{% else %}
+- All communications should be professional and factual
+- Use clear, concise language appropriate for the audience
+- Distribute information on a need-to-know basis
+- Maintain confidentiality of sensitive information
+- Document key decisions and action items
+- Follow up on communications requiring action
+{% endif %}
+
+---
+*Plan Version:* {{ version | default('1.0') }}
+*Approved By:* {{ approved_by | default('TBD') }}
+*Next Review:* {{ next_review | default('TBD') }}
