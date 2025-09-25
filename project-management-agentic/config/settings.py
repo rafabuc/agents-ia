@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     
     # Model Configuration
     default_llm_provider: str = Field("anthropic", env="DEFAULT_LLM_PROVIDER")#openai
-    default_model: str = Field("gpt-4", env="DEFAULT_MODEL")
+    default_model: str = Field("claude-3-haiku-20240307", env="DEFAULT_MODEL")#gpt-4
     embedding_model: str = Field("text-embedding-ada-002", env="EMBEDDING_MODEL")
     
     # System Settings

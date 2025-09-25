@@ -61,3 +61,547 @@
 2025-09-24 13:28:29 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
 2025-09-24 13:28:29 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
 2025-09-24 13:28:29 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 18:44:48 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 18:44:48 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 18:44:48 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 18:44:48 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 18:44:48 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 18:44:51 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 18:44:51 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 18:44:51 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 18:44:51 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 18:46:15 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 18:46:15 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 18:46:15 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 18:46:16 | ERROR    | agents.pmp_project_agent:process:401 - PMP Agent error: Error processing request: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your_ope************here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-09-24 18:47:28 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 18:47:28 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 18:47:28 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 18:47:28 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 18:47:28 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 18:47:31 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 18:47:31 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 18:47:31 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 18:47:31 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 18:47:37 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 18:47:37 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 18:47:37 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 18:47:37 | ERROR    | agents.pmp_project_agent:process:401 - PMP Agent error: Error processing request: Messages.stream() got an unexpected keyword argument 'functions'
+2025-09-24 18:48:09 | ERROR    | agents.pmp_project_agent:process:401 - PMP Agent error: Error processing request: Messages.stream() got an unexpected keyword argument 'functions'
+2025-09-24 18:48:17 | ERROR    | agents.pmp_project_agent:process:401 - PMP Agent error: Error processing request: Messages.stream() got an unexpected keyword argument 'functions'
+2025-09-24 18:51:30 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 18:51:30 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 18:51:30 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 18:51:30 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 18:51:30 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 18:51:33 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 18:51:33 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 18:51:33 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 18:51:33 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 18:51:42 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 18:51:42 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 18:51:42 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 18:51:42 | INFO     | storage.database_manager:create_project:33 - Created project: Mi Nuevo Proyecto PMP (ID: 1)
+2025-09-24 18:51:42 | ERROR    | agents.pmp_project_agent:create_project:103 - Error creating project: Instance <Project at 0x224f5b86810> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 18:51:42 | INFO     | agents.pmp_project_agent:process:377 - PMP Agent processed request: crear proyecto...
+2025-09-24 18:52:10 | INFO     | agents.pmp_project_agent:process:377 - PMP Agent processed request: quien eres?...
+2025-09-24 18:52:22 | INFO     | agents.pmp_project_agent:process:377 - PMP Agent processed request: charter...
+2025-09-24 18:52:54 | INFO     | storage.database_manager:create_project:33 - Created project: Mi Nuevo Proyecto PMP (ID: 2)
+2025-09-24 18:52:54 | ERROR    | agents.pmp_project_agent:create_project:103 - Error creating project: Instance <Project at 0x224f6d83690> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 18:52:54 | INFO     | agents.pmp_project_agent:process:377 - PMP Agent processed request: crear proyecto...
+2025-09-24 18:59:48 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 18:59:48 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 18:59:48 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 18:59:48 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 18:59:48 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 18:59:51 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 18:59:51 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 18:59:51 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 18:59:51 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 18:59:58 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 18:59:58 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 18:59:58 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 18:59:58 | INFO     | storage.database_manager:create_project:33 - Created project: Mi Nuevo Proyecto PMP (ID: 3)
+2025-09-24 18:59:58 | ERROR    | agents.pmp_project_agent:create_project:107 - Error creating project: Instance <Project at 0x2ba342e2110> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 18:59:58 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: crear proyecto...
+2025-09-24 19:04:12 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 19:04:12 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 19:04:12 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 19:04:12 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 19:04:12 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 19:04:15 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 19:04:15 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 19:04:15 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 19:04:15 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 19:04:21 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 19:04:21 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 19:04:21 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 19:04:21 | INFO     | storage.database_manager:create_project:33 - Created project: Mi Nuevo Proyecto PMP (ID: 4)
+2025-09-24 19:04:21 | WARNING  | agents.pmp_project_agent:create_project:104 - Could not access project object: Instance <Project at 0x1d4663be810> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 19:04:22 | ERROR    | agents.pmp_project_agent:create_project:131 - Error creating project: Instance <Project at 0x1d466093390> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 19:04:22 | INFO     | agents.pmp_project_agent:process:405 - PMP Agent processed request: crear proyecto...
+2025-09-24 19:09:02 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 19:09:02 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 19:09:02 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 19:09:02 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 19:09:02 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 19:09:05 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 19:09:05 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 19:09:05 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 19:09:05 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 19:09:13 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 19:09:13 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 19:09:13 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 19:09:13 | INFO     | storage.database_manager:create_project:38 - Created project: Mi Nuevo Proyecto PMP (ID: 5)
+2025-09-24 19:09:13 | INFO     | storage.file_manager:create_project_directory:40 - Created project directory: ./data/projects\project_5
+2025-09-24 19:09:13 | INFO     | agents.pmp_project_agent:create_project:102 - Created project Mi Nuevo Proyecto PMP with ID 5
+2025-09-24 19:09:13 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: crear proyecto...
+2025-09-24 19:10:02 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: charter...
+2025-09-24 19:10:40 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter en archivo local...
+2025-09-24 19:18:00 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 19:18:00 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 19:18:00 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 19:18:00 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 19:18:00 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 19:18:03 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 19:18:03 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 19:18:03 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 19:18:03 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 19:18:15 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 19:18:15 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 19:18:15 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 19:18:15 | INFO     | storage.database_manager:create_project:38 - Created project: Mi Nuevo Proyecto PMP (ID: 6)
+2025-09-24 19:18:15 | INFO     | storage.file_manager:create_project_directory:40 - Created project directory: ./data/projects\project_6
+2025-09-24 19:18:15 | INFO     | agents.pmp_project_agent:create_project:102 - Created project Mi Nuevo Proyecto PMP with ID 6
+2025-09-24 19:18:15 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: crear proyecto...
+2025-09-24 19:19:02 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: que es pmp?...
+2025-09-24 19:19:24 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: ayuda...
+2025-09-24 19:19:38 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: charter...
+2025-09-24 19:19:57 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 6 ...
+2025-09-24 20:23:09 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:23:09 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:23:09 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 20:23:09 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 20:23:09 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 20:23:13 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 20:23:13 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 20:23:13 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 20:23:13 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 20:23:18 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:23:18 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:23:18 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 20:23:18 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: ayuda...
+2025-09-24 20:23:33 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e5643bd0> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:23:33 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e4127990> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:23:33 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6833310> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:23:33 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6833410> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:23:33 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6833550> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:23:33 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6840290> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:23:33 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: listar proyectos...
+2025-09-24 20:23:56 | INFO     | storage.database_manager:create_project:38 - Created project: test (ID: 7)
+2025-09-24 20:23:56 | INFO     | storage.file_manager:create_project_directory:40 - Created project directory: ./data/projects\project_7
+2025-09-24 20:23:56 | INFO     | agents.pmp_project_agent:create_project:102 - Created project test with ID 7
+2025-09-24 20:23:56 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: crear proyecto test...
+2025-09-24 20:24:05 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: listar...
+2025-09-24 20:24:15 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6857dd0> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:24:15 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6857ed0> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:24:15 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6857fd0> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:24:15 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e68580d0> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:24:15 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6858e90> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:24:15 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6859110> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:24:15 | WARNING  | agents.pmp_project_agent:_handle_list_projects_request:742 - Error accessing project data: Instance <Project at 0x1e0e6859190> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-09-24 20:24:15 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: listar proyectos...
+2025-09-24 20:29:33 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:29:33 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:29:33 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 20:29:33 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 20:29:33 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 20:29:36 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 20:29:36 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 20:29:36 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 20:29:36 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 20:29:46 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:29:46 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:29:46 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 20:29:46 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: listar proyectos...
+2025-09-24 20:30:22 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 1 ...
+2025-09-24 20:31:27 | INFO     | storage.database_manager:create_project:38 - Created project: Nuevo Proyecto PMP (ID: 8)
+2025-09-24 20:31:27 | INFO     | storage.file_manager:create_project_directory:40 - Created project directory: ./data/projects\project_8
+2025-09-24 20:31:27 | INFO     | agents.pmp_project_agent:create_project:102 - Created project Nuevo Proyecto PMP with ID 8
+2025-09-24 20:31:27 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 1 Mi Nuevo Proyecto PMP...
+2025-09-24 20:34:11 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter...
+2025-09-24 20:34:25 | INFO     | storage.database_manager:create_project:38 - Created project: Nuevo Proyecto PMP (ID: 9)
+2025-09-24 20:34:25 | INFO     | storage.file_manager:create_project_directory:40 - Created project directory: ./data/projects\project_9
+2025-09-24 20:34:25 | INFO     | agents.pmp_project_agent:create_project:102 - Created project Nuevo Proyecto PMP with ID 9
+2025-09-24 20:34:25 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 8 Mi Nuevo Proyecto PMP...
+2025-09-24 20:40:59 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:40:59 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:40:59 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 20:40:59 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 20:40:59 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 20:41:02 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 20:41:02 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 20:41:02 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 20:41:02 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 20:41:17 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:41:17 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:41:17 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 20:41:17 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: listar proyectos...
+2025-09-24 20:41:43 | INFO     | storage.database_manager:create_project:38 - Created project: Nuevo Proyecto PMP (ID: 10)
+2025-09-24 20:41:43 | INFO     | storage.file_manager:create_project_directory:40 - Created project directory: ./data/projects\project_10
+2025-09-24 20:41:43 | INFO     | agents.pmp_project_agent:create_project:102 - Created project Nuevo Proyecto PMP with ID 10
+2025-09-24 20:41:43 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 9 Mi Nuevo Proyecto PMP...
+2025-09-24 20:43:28 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: listar proyectos...
+2025-09-24 20:46:25 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:46:25 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:46:25 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 20:46:25 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 20:46:25 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 20:46:28 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 20:46:28 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 20:46:28 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 20:46:28 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 20:46:45 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:46:45 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:46:45 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 20:46:45 | INFO     | storage.database_manager:create_project:38 - Created project: test (ID: 11)
+2025-09-24 20:46:45 | INFO     | storage.file_manager:create_project_directory:40 - Created project directory: ./data/projects\project_11
+2025-09-24 20:46:45 | INFO     | agents.pmp_project_agent:create_project:102 - Created project test with ID 11
+2025-09-24 20:46:45 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: crear proyecto test...
+2025-09-24 20:46:57 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: listar proyectos...
+2025-09-24 20:47:35 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 11...
+2025-09-24 20:47:44 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 11 Test...
+2025-09-24 20:47:58 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:47:58 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:47:58 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 20:47:58 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 20:47:58 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 20:48:02 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 20:48:02 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 20:48:02 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 20:48:02 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 20:48:42 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:48:42 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:48:42 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 20:48:42 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: listar proyectos...
+2025-09-24 20:49:08 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 11 test...
+2025-09-24 20:49:21 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 11 test...
+2025-09-24 20:49:32 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 11 test...
+2025-09-24 20:54:07 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:54:07 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:54:07 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 20:54:07 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 20:54:07 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 20:54:10 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 20:54:10 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 20:54:10 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 20:54:10 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 20:54:17 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:54:17 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:54:17 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 20:54:17 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: listar proyectos...
+2025-09-24 20:54:35 | ERROR    | agents.pmp_project_agent:_handle_save_charter_request:668 - Error guardando charter: 'Project' object is not subscriptable
+2025-09-24 20:54:35 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 11 test...
+2025-09-24 20:57:47 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:57:47 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:57:47 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 20:57:47 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 20:57:47 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 20:57:50 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 20:57:50 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 20:57:50 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 20:57:50 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 20:57:59 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 20:57:59 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 20:57:59 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 20:57:59 | INFO     | storage.file_manager:save_project_document:69 - Saved document: ./data/projects\project_11\documents\project_charter_test.md
+2025-09-24 20:57:59 | INFO     | storage.database_manager:create_project_document:213 - Created project document: 1
+2025-09-24 20:57:59 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar charter 11 test...
+2025-09-24 20:59:15 | INFO     | storage.file_manager:save_project_document:69 - Saved document: ./data/projects\project_11\documents\risk_register_test.md
+2025-09-24 20:59:15 | INFO     | storage.database_manager:create_project_document:213 - Created project document: 2
+2025-09-24 20:59:15 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: guardar risk 11 test...
+2025-09-24 21:00:28 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: plan...
+2025-09-24 21:21:37 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 21:21:37 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 21:21:37 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 21:21:37 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 21:21:37 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 21:21:40 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 21:21:40 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 21:21:40 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 21:21:40 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 21:21:47 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 21:21:47 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 21:21:47 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 21:21:50 | ERROR    | agents.pmp_project_agent:_detect_intent_with_llm:655 - Error detecting intent with LLM: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: gpt-4'}, 'request_id': 'req_011CTUQB9Fdbt968kkk8ta8P'}
+2025-09-24 21:21:50 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: other (confidence: 0.1)
+2025-09-24 21:21:50 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: ver proyectos...
+2025-09-24 21:22:04 | ERROR    | agents.pmp_project_agent:_detect_intent_with_llm:655 - Error detecting intent with LLM: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: gpt-4'}, 'request_id': 'req_011CTUQC8FPKKniB2uf8GmwZ'}
+2025-09-24 21:22:04 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: other (confidence: 0.1)
+2025-09-24 21:22:04 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: lista proyectos...
+2025-09-24 21:22:24 | ERROR    | agents.pmp_project_agent:_detect_intent_with_llm:655 - Error detecting intent with LLM: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: gpt-4'}, 'request_id': 'req_011CTUQDdUZsxAp28Fkf5uXY'}
+2025-09-24 21:22:24 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: other (confidence: 0.1)
+2025-09-24 21:22:24 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: lista mis proyectos...
+2025-09-24 21:25:19 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 21:25:19 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 21:25:19 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-24 21:25:19 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-24 21:25:19 | INFO     | agents.agent_factory:__init__:20 - AgentFactory initialized
+2025-09-24 21:25:22 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-24 21:25:22 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-24 21:25:22 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-24 21:25:22 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-24 21:25:43 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-24 21:25:43 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-24 21:25:43 | INFO     | agents.agent_factory:create_agent:40 - Created agent: pmp_project
+2025-09-24 21:25:45 | INFO     | agents.pmp_project_agent:_detect_intent_with_llm:646 - LLM detected intent: list_projects (confidence: 0.95)
+2025-09-24 21:25:45 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: list_projects (confidence: 0.95)
+2025-09-24 21:25:45 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: ver proyectos...
+2025-09-24 21:26:55 | INFO     | agents.pmp_project_agent:_detect_intent_with_llm:646 - LLM detected intent: create_project (confidence: 0.95)
+2025-09-24 21:26:55 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: create_project (confidence: 0.95)
+2025-09-24 21:26:55 | INFO     | storage.database_manager:create_project:38 - Created project: nuevo proyecto (ID: 12)
+2025-09-24 21:26:55 | INFO     | storage.file_manager:create_project_directory:40 - Created project directory: ./data/projects\project_12
+2025-09-24 21:26:55 | INFO     | agents.pmp_project_agent:create_project:102 - Created project nuevo proyecto with ID 12
+2025-09-24 21:26:55 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: nuevo proyecto...
+2025-09-24 21:27:18 | INFO     | agents.pmp_project_agent:_detect_intent_with_llm:646 - LLM detected intent: save_charter (confidence: 0.8)
+2025-09-24 21:27:18 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: save_charter (confidence: 0.8)
+2025-09-24 21:27:18 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: charter...
+2025-09-24 21:27:30 | INFO     | agents.pmp_project_agent:_detect_intent_with_llm:646 - LLM detected intent: save_charter (confidence: 0.9)
+2025-09-24 21:27:30 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: save_charter (confidence: 0.9)
+2025-09-24 21:27:30 | INFO     | storage.file_manager:save_project_document:69 - Saved document: ./data/projects\project_12\documents\project_charter_nuevo_proyecto.md
+2025-09-24 21:27:30 | INFO     | storage.database_manager:create_project_document:213 - Created project document: 3
+2025-09-24 21:27:30 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: charter 12...
+2025-09-24 21:29:20 | INFO     | agents.pmp_project_agent:_detect_intent_with_llm:646 - LLM detected intent: view_template (confidence: 0.9)
+2025-09-24 21:29:20 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: view_template (confidence: 0.9)
+2025-09-24 21:29:20 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: que nuevas plantillas me sugieres?...
+2025-09-24 21:29:38 | INFO     | agents.pmp_project_agent:_detect_intent_with_llm:646 - LLM detected intent: view_template (confidence: 0.8)
+2025-09-24 21:29:38 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: view_template (confidence: 0.8)
+2025-09-24 21:29:38 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: hay plantillas aparte de estas ?...
+2025-09-24 21:29:57 | INFO     | agents.pmp_project_agent:_detect_intent_with_llm:646 - LLM detected intent: help (confidence: 0.95)
+2025-09-24 21:29:57 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: help (confidence: 0.95)
+2025-09-24 21:29:57 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: que es pmp?...
+2025-09-24 21:30:31 | INFO     | agents.pmp_project_agent:_detect_intent_with_llm:646 - LLM detected intent: view_template (confidence: 0.95)
+2025-09-24 21:30:31 | INFO     | agents.pmp_project_agent:_process_with_simple_logic:413 - Detected intent: view_template (confidence: 0.95)
+2025-09-24 21:30:31 | INFO     | agents.pmp_project_agent:process:381 - PMP Agent processed request: ver charter...
+2025-09-25 13:55:26 | INFO     | agents.base_agent:__init__:34 - Initialized agent: project_manager_agent
+2025-09-25 13:55:28 | INFO     | agents.base_agent:__init__:34 - Initialized agent: document_agent
+2025-09-25 13:55:30 | INFO     | agents.base_agent:__init__:34 - Initialized agent: risk_management_agent
+2025-09-25 14:33:59 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 14:33:59 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 14:33:59 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 14:33:59 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 14:33:59 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 14:34:02 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 14:34:02 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 14:34:02 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 14:34:02 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 14:35:23 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 14:35:23 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 14:35:23 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 14:35:23 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 14:35:23 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 14:35:25 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 14:35:25 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 14:35:25 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 14:35:25 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 14:36:08 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 14:36:08 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 14:36:08 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 14:36:08 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 14:36:08 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 14:36:10 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 14:36:10 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 14:36:10 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 14:36:10 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 14:43:11 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 14:43:11 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 14:43:11 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 14:43:11 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 14:43:11 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 14:43:18 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 14:43:18 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 14:43:18 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 14:43:18 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 14:46:22 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 14:46:22 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 14:46:22 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 14:46:22 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 14:46:22 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 14:46:24 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 14:46:24 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 14:46:24 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 14:46:24 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 14:46:24 | INFO     | agents.orchestrator:__init__:72 - AgentOrchestrator initialized
+2025-09-25 14:46:25 | INFO     | agents.base_agent:__init__:34 - Initialized agent: project_manager_agent
+2025-09-25 14:46:25 | INFO     | agents.base_agent:initialize:59 - Agent project_manager_agent initialized successfully
+2025-09-25 14:46:25 | INFO     | agents.agent_factory:create_agent:52 - Created agent: project_manager_agent
+2025-09-25 14:46:25 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: project_manager_agent with capabilities: ['project_charter']
+2025-09-25 14:46:26 | INFO     | agents.base_agent:__init__:34 - Initialized agent: document_agent
+2025-09-25 14:46:26 | INFO     | agents.base_agent:initialize:59 - Agent document_agent initialized successfully
+2025-09-25 14:46:26 | INFO     | agents.agent_factory:create_agent:52 - Created agent: document_agent
+2025-09-25 14:46:26 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: document_agent with capabilities: ['project_charter', 'wbs_creation', 'report_generation']
+2025-09-25 14:46:27 | INFO     | agents.base_agent:__init__:34 - Initialized agent: risk_management_agent
+2025-09-25 14:46:27 | INFO     | agents.base_agent:initialize:59 - Agent risk_management_agent initialized successfully
+2025-09-25 14:46:27 | INFO     | agents.agent_factory:create_agent:52 - Created agent: risk_management_agent
+2025-09-25 14:46:27 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: risk_management_agent with capabilities: ['risk_register']
+2025-09-25 14:46:27 | INFO     | agents.agent_factory:_setup_orchestrator:130 - Orchestrator setup completed with registered agents
+2025-09-25 14:46:27 | INFO     | agents.agent_factory:create_multiagent_system:151 - Multi-agent system initialized successfully
+2025-09-25 14:46:52 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: project_manager_agent
+2025-09-25 14:48:03 | WARNING  | agents.orchestrator:_route_to_single_agent:180 - Agent budget_agent not found, using fallback
+2025-09-25 14:48:03 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: project_manager_agent
+2025-09-25 14:48:56 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: project_manager_agent
+2025-09-25 14:50:13 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: project_manager_agent
+2025-09-25 14:50:15 | ERROR    | agents.project_manager_agent:_handle_project_creation:295 - Error in project creation: DatabaseManager.create_project() got an unexpected keyword argument 'status'
+2025-09-25 14:56:12 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 14:56:12 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 14:56:12 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 14:56:12 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 14:56:12 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 14:56:18 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 14:56:18 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 14:56:18 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 14:56:18 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 14:56:18 | INFO     | agents.orchestrator:__init__:72 - AgentOrchestrator initialized
+2025-09-25 14:56:20 | INFO     | agents.base_agent:__init__:34 - Initialized agent: project_manager_agent
+2025-09-25 14:56:20 | INFO     | agents.base_agent:initialize:59 - Agent project_manager_agent initialized successfully
+2025-09-25 14:56:20 | INFO     | agents.agent_factory:create_agent:52 - Created agent: project_manager_agent
+2025-09-25 14:56:20 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: project_manager_agent with capabilities: ['project_charter']
+2025-09-25 14:56:21 | INFO     | agents.base_agent:__init__:34 - Initialized agent: document_agent
+2025-09-25 14:56:21 | INFO     | agents.base_agent:initialize:59 - Agent document_agent initialized successfully
+2025-09-25 14:56:21 | INFO     | agents.agent_factory:create_agent:52 - Created agent: document_agent
+2025-09-25 14:56:21 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: document_agent with capabilities: ['project_charter', 'wbs_creation', 'report_generation']
+2025-09-25 14:56:22 | INFO     | agents.base_agent:__init__:34 - Initialized agent: risk_management_agent
+2025-09-25 14:56:22 | INFO     | agents.base_agent:initialize:59 - Agent risk_management_agent initialized successfully
+2025-09-25 14:56:22 | INFO     | agents.agent_factory:create_agent:52 - Created agent: risk_management_agent
+2025-09-25 14:56:22 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: risk_management_agent with capabilities: ['risk_register']
+2025-09-25 14:56:22 | INFO     | agents.agent_factory:_setup_orchestrator:130 - Orchestrator setup completed with registered agents
+2025-09-25 14:56:22 | INFO     | agents.agent_factory:create_multiagent_system:151 - Multi-agent system initialized successfully
+2025-09-25 14:56:30 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: project_manager_agent
+2025-09-25 14:57:05 | INFO     | agents.orchestrator:_coordinate_multi_agent_task:200 - Coordinating multi-agent task: project_manager_agent + ['document_agent', 'risk_management_agent']
+2025-09-25 14:57:06 | INFO     | storage.database_manager:create_project:38 - Created project: Test Project1 (ID: 13)
+2025-09-25 14:59:24 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: risk_management_agent
+2025-09-25 14:59:43 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: risk_management_agent
+2025-09-25 14:59:50 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: project_manager_agent
+2025-09-25 15:00:30 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: risk_management_agent
+2025-09-25 15:00:48 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: risk_management_agent
+2025-09-25 15:04:32 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 15:04:32 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 15:04:32 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 15:04:32 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 15:04:32 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 15:04:36 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 15:04:36 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 15:04:36 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 15:04:36 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 15:04:36 | INFO     | agents.orchestrator:__init__:72 - AgentOrchestrator initialized
+2025-09-25 15:04:37 | INFO     | agents.base_agent:__init__:34 - Initialized agent: project_manager_agent
+2025-09-25 15:04:37 | INFO     | agents.base_agent:initialize:59 - Agent project_manager_agent initialized successfully
+2025-09-25 15:04:37 | INFO     | agents.agent_factory:create_agent:52 - Created agent: project_manager_agent
+2025-09-25 15:04:37 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: project_manager_agent with capabilities: ['project_charter']
+2025-09-25 15:04:38 | INFO     | agents.base_agent:__init__:34 - Initialized agent: document_agent
+2025-09-25 15:04:38 | INFO     | agents.base_agent:initialize:59 - Agent document_agent initialized successfully
+2025-09-25 15:04:38 | INFO     | agents.agent_factory:create_agent:52 - Created agent: document_agent
+2025-09-25 15:04:38 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: document_agent with capabilities: ['project_charter', 'wbs_creation', 'report_generation']
+2025-09-25 15:04:39 | INFO     | agents.base_agent:__init__:34 - Initialized agent: risk_management_agent
+2025-09-25 15:04:39 | INFO     | agents.base_agent:initialize:59 - Agent risk_management_agent initialized successfully
+2025-09-25 15:04:39 | INFO     | agents.agent_factory:create_agent:52 - Created agent: risk_management_agent
+2025-09-25 15:04:39 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: risk_management_agent with capabilities: ['risk_register']
+2025-09-25 15:04:39 | INFO     | agents.agent_factory:_setup_orchestrator:130 - Orchestrator setup completed with registered agents
+2025-09-25 15:04:39 | INFO     | agents.agent_factory:create_multiagent_system:151 - Multi-agent system initialized successfully
+2025-09-25 15:05:01 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: project_manager_agent
+2025-09-25 15:05:19 | INFO     | agents.orchestrator:_route_to_single_agent:192 - Routing to single agent: document_agent
+2025-09-25 16:31:29 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 16:31:29 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 16:31:29 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 16:31:29 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 16:31:29 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 16:31:33 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 16:31:33 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 16:31:33 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 16:31:33 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 16:31:33 | INFO     | agents.orchestrator:__init__:72 - AgentOrchestrator initialized
+2025-09-25 16:31:34 | INFO     | agents.base_agent:__init__:34 - Initialized agent: project_manager_agent
+2025-09-25 16:31:34 | INFO     | agents.base_agent:initialize:59 - Agent project_manager_agent initialized successfully
+2025-09-25 16:31:34 | INFO     | agents.agent_factory:create_agent:52 - Created agent: project_manager_agent
+2025-09-25 16:31:34 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: project_manager_agent with capabilities: ['project_charter']
+2025-09-25 16:31:35 | INFO     | agents.base_agent:__init__:34 - Initialized agent: document_agent
+2025-09-25 16:31:35 | INFO     | agents.base_agent:initialize:59 - Agent document_agent initialized successfully
+2025-09-25 16:31:35 | INFO     | agents.agent_factory:create_agent:52 - Created agent: document_agent
+2025-09-25 16:31:35 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: document_agent with capabilities: ['project_charter', 'wbs_creation', 'report_generation']
+2025-09-25 16:31:36 | INFO     | agents.base_agent:__init__:34 - Initialized agent: risk_management_agent
+2025-09-25 16:31:36 | INFO     | agents.base_agent:initialize:59 - Agent risk_management_agent initialized successfully
+2025-09-25 16:31:36 | INFO     | agents.agent_factory:create_agent:52 - Created agent: risk_management_agent
+2025-09-25 16:31:36 | INFO     | agents.orchestrator:register_agent:80 - Registered agent: risk_management_agent with capabilities: ['risk_register']
+2025-09-25 16:31:36 | INFO     | agents.agent_factory:_setup_orchestrator:130 - Orchestrator setup completed with registered agents
+2025-09-25 16:31:36 | INFO     | agents.agent_factory:create_multiagent_system:151 - Multi-agent system initialized successfully
+2025-09-25 16:32:41 | INFO     | agents.orchestrator:_route_to_single_agent:198 - Routing to single agent: project_manager_agent
+2025-09-25 16:33:04 | INFO     | agents.orchestrator:_route_to_single_agent:198 - Routing to single agent: document_agent
+2025-09-25 16:33:13 | INFO     | storage.file_manager:create_project_directory:40 - Created project directory: ./data/projects\project_13
+2025-09-25 16:33:13 | INFO     | storage.file_manager:save_project_document:69 - Saved document: ./data/projects\project_13\documents\project_charter_test_project1.md
+2025-09-25 16:33:13 | INFO     | storage.database_manager:create_project_document:213 - Created project document: 4
+2025-09-25 17:02:58 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 17:02:58 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 17:02:58 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 17:02:58 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 17:02:58 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 17:03:01 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 17:03:01 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 17:03:01 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 17:03:01 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 17:03:01 | INFO     | agents.orchestrator:__init__:73 - AgentOrchestrator initialized
+2025-09-25 17:03:02 | INFO     | agents.base_agent:__init__:34 - Initialized agent: project_manager_agent
+2025-09-25 17:03:02 | INFO     | agents.base_agent:initialize:59 - Agent project_manager_agent initialized successfully
+2025-09-25 17:03:02 | INFO     | agents.agent_factory:create_agent:52 - Created agent: project_manager_agent
+2025-09-25 17:03:02 | INFO     | agents.orchestrator:register_agent:81 - Registered agent: project_manager_agent with capabilities: ['project_charter']
+2025-09-25 17:03:03 | INFO     | agents.base_agent:__init__:34 - Initialized agent: document_agent
+2025-09-25 17:03:03 | INFO     | agents.base_agent:initialize:59 - Agent document_agent initialized successfully
+2025-09-25 17:03:03 | INFO     | agents.agent_factory:create_agent:52 - Created agent: document_agent
+2025-09-25 17:03:03 | INFO     | agents.orchestrator:register_agent:81 - Registered agent: document_agent with capabilities: ['project_charter', 'wbs_creation', 'report_generation']
+2025-09-25 17:03:04 | INFO     | agents.base_agent:__init__:34 - Initialized agent: risk_management_agent
+2025-09-25 17:03:04 | INFO     | agents.base_agent:initialize:59 - Agent risk_management_agent initialized successfully
+2025-09-25 17:03:04 | INFO     | agents.agent_factory:create_agent:52 - Created agent: risk_management_agent
+2025-09-25 17:03:04 | INFO     | agents.orchestrator:register_agent:81 - Registered agent: risk_management_agent with capabilities: ['risk_register']
+2025-09-25 17:03:05 | INFO     | agents.base_agent:__init__:34 - Initialized agent: cost_budget_agent
+2025-09-25 17:03:05 | INFO     | agents.base_agent:initialize:59 - Agent cost_budget_agent initialized successfully
+2025-09-25 17:03:05 | INFO     | agents.agent_factory:create_agent:52 - Created agent: cost_budget
+2025-09-25 17:03:05 | INFO     | agents.orchestrator:register_agent:81 - Registered agent: cost_budget_agent with capabilities: ['cost_estimation']
+2025-09-25 17:03:05 | INFO     | agents.agent_factory:_setup_orchestrator:133 - Orchestrator setup completed with registered agents
+2025-09-25 17:03:05 | INFO     | agents.agent_factory:create_multiagent_system:154 - Multi-agent system initialized successfully
+2025-09-25 17:03:19 | INFO     | agents.orchestrator:_route_to_single_agent:199 - Routing to single agent: project_manager_agent
+2025-09-25 17:03:37 | INFO     | agents.orchestrator:_route_to_single_agent:199 - Routing to single agent: project_manager_agent
+2025-09-25 17:03:38 | ERROR    | agents.project_manager_agent:_handle_project_status:471 - Error getting project status: 'DatabaseManager' object has no attribute 'get_project_documents'
+2025-09-25 17:05:10 | INFO     | agents.orchestrator:_route_to_single_agent:199 - Routing to single agent: cost_budget_agent
+2025-09-25 17:05:26 | INFO     | agents.orchestrator:_route_to_single_agent:199 - Routing to single agent: cost_budget_agent
+2025-09-25 17:05:39 | INFO     | agents.orchestrator:_route_to_single_agent:199 - Routing to single agent: cost_budget_agent
+2025-09-25 17:05:40 | INFO     | storage.file_manager:save_project_document:69 - Saved document: ./data/projects\project_13\documents\cost_estimate_test_project1.md
+2025-09-25 17:05:40 | INFO     | storage.database_manager:create_project_document:213 - Created project document: 5
+2025-09-25 17:08:46 | INFO     | agents.base_agent:__init__:34 - Initialized agent: PMP_Project_Agent
+2025-09-25 17:08:46 | INFO     | agents.base_agent:initialize:59 - Agent PMP_Project_Agent initialized successfully
+2025-09-25 17:08:46 | INFO     | workflows.project_workflow:__init__:36 - ProjectWorkflow initialized
+2025-09-25 17:08:46 | INFO     | workflows.workflow_manager:__init__:31 - WorkflowManager initialized
+2025-09-25 17:08:46 | INFO     | agents.agent_factory:__init__:32 - AgentFactory initialized with multi-agent support
+2025-09-25 17:08:49 | INFO     | rag.vector_store:_init_chroma:75 - ChromaDB initialized successfully
+2025-09-25 17:08:49 | INFO     | rag.vector_store:__init__:44 - VectorStoreManager initialized
+2025-09-25 17:08:49 | INFO     | rag.document_processor:__init__:50 - DocumentProcessor initialized with support for: PDF, DOCX, TXT, MD
+2025-09-25 17:08:49 | INFO     | rag.retriever:__init__:29 - RAGRetriever initialized successfully
+2025-09-25 17:08:49 | INFO     | agents.orchestrator:__init__:73 - AgentOrchestrator initialized
+2025-09-25 17:08:49 | INFO     | agents.base_agent:__init__:34 - Initialized agent: project_manager_agent
+2025-09-25 17:08:49 | INFO     | agents.base_agent:initialize:59 - Agent project_manager_agent initialized successfully
+2025-09-25 17:08:49 | INFO     | agents.agent_factory:create_agent:52 - Created agent: project_manager_agent
+2025-09-25 17:08:49 | INFO     | agents.orchestrator:register_agent:81 - Registered agent: project_manager_agent with capabilities: ['project_charter']
+2025-09-25 17:08:50 | INFO     | agents.base_agent:__init__:34 - Initialized agent: document_agent
+2025-09-25 17:08:50 | INFO     | agents.base_agent:initialize:59 - Agent document_agent initialized successfully
+2025-09-25 17:08:50 | INFO     | agents.agent_factory:create_agent:52 - Created agent: document_agent
+2025-09-25 17:08:50 | INFO     | agents.orchestrator:register_agent:81 - Registered agent: document_agent with capabilities: ['project_charter', 'wbs_creation', 'report_generation']
+2025-09-25 17:08:51 | INFO     | agents.base_agent:__init__:34 - Initialized agent: risk_management_agent
+2025-09-25 17:08:51 | INFO     | agents.base_agent:initialize:59 - Agent risk_management_agent initialized successfully
+2025-09-25 17:08:51 | INFO     | agents.agent_factory:create_agent:52 - Created agent: risk_management_agent
+2025-09-25 17:08:51 | INFO     | agents.orchestrator:register_agent:81 - Registered agent: risk_management_agent with capabilities: ['risk_register']
+2025-09-25 17:08:53 | INFO     | agents.base_agent:__init__:34 - Initialized agent: cost_budget_agent
+2025-09-25 17:08:53 | INFO     | agents.base_agent:initialize:59 - Agent cost_budget_agent initialized successfully
+2025-09-25 17:08:53 | INFO     | agents.agent_factory:create_agent:52 - Created agent: cost_budget
+2025-09-25 17:08:53 | INFO     | agents.orchestrator:register_agent:81 - Registered agent: cost_budget_agent with capabilities: ['cost_estimation']
+2025-09-25 17:08:53 | INFO     | agents.agent_factory:_setup_orchestrator:133 - Orchestrator setup completed with registered agents
+2025-09-25 17:08:53 | INFO     | agents.agent_factory:create_multiagent_system:154 - Multi-agent system initialized successfully
+2025-09-25 17:09:05 | INFO     | agents.orchestrator:_route_to_single_agent:199 - Routing to single agent: project_manager_agent
+2025-09-25 17:09:06 | INFO     | storage.database_manager:get_project_documents:249 - Retrieved 2 documents for project 13

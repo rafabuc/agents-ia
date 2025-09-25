@@ -25,3 +25,132 @@ pip cache purge
 
 pip install chromadb  # Solo si necesitas RAG
 pip install streamlit  # Solo si necesitas web interface
+
+
+
+
+
+# Verificar que el agente está corriendo
+ps aux | grep python
+
+# Ver archivos de proyecto
+ls -la ./projects/
+
+# Ver logs del agente
+tail -f ./logs/agent.log
+
+
+
+# Probar directamente en Python
+python -c "
+from core.agent import ProjectManagementAgent
+agent = ProjectManagementAgent()
+projects = agent.list_projects()
+print('Proyectos:', projects)
+"
+
+
+
+
+# 1. Configurar sistema
+python setup_database.py
+
+# 2. Migrar conversaciones existentes (opcional)
+python migrate_to_database.py
+
+# 3. Probar el agente
+python main.py start
+
+
+
+-- Buscar todas las conversaciones sobre riesgos
+SELECT * FROM message_search WHERE content MATCH 'riesgo OR risk';
+
+-- Estadísticas de uso por proyecto
+SELECT project_id, COUNT(*) as messages, SUM(tokens_used) as total_tokens 
+FROM conversation_messages 
+GROUP BY project_id;
+
+-- Conversaciones más activas
+SELECT s.name, COUNT(m.id) as message_count
+FROM conversation_sessions s
+JOIN conversation_messages m ON s.id = m.session_id
+GROUP BY s.id
+ORDER BY message_count DESC;
+
+
+
+---------------------------------------
+nuevo agente con db 
+
+# Comandos nuevos disponibles:
+nueva sesion          # Crear nueva sesión
+cargar sesion         # Cargar sesión existente  
+listar sesiones       # Ver todas las sesiones
+buscar [término]      # Búsqueda full-text
+exportar sesion       # Export a Markdown/JSON
+analytics             # Estadísticas detalladas
+resumen sesion        # Resumen automático con IA
+limpiar datos         # Archivado de sesiones antiguas
+estadisticas bd       # Info de la base de datos
+
+# 1. Crear estructura de carpetas
+mkdir -p database tests
+
+# 2. Copiar los archivos de los artifacts
+# - database/conversation_db.py
+# - core/agent.py (actualizado)
+# - main.py (actualizado)
+# - tests/test_conversation_system.py
+
+# 3. Ejecutar tests
+python tests/test_conversation_system.py
+
+# 4. Iniciar el agente
+python main.py
+
+
+
+8 COMANDOS BRUTALES que DEJAN TU WINDOWS NUEVO en 5 MINUTOS 
+(y el #6 es criminalmente poderoso)
+
+¿Tu PC va lento, se cuelga o da errores?
+
+Olvídate de formatear. Estos 8 comandos en PowerShell/CMD son el secreto de los sysadmins para revivir cualquier Windows:
+
+1️⃣ `sfc /scannow` → Repara archivos de sistema corruptos. Tu PC te lo agradecerá.
+
+2️⃣ `DISM /Online /Cleanup-Image /RestoreHealth` → El “médico” de Windows. Repara la imagen desde servidores oficiales.
+
+3️⃣ `winget upgrade --all` → Actualiza TODAS tus apps de golpe. Sin instaladores individuales.
+
+4️⃣ `chkdsk C: /f /r` → Revisa errores físicos y lógicos del disco. ⚠️ Requiere reinicio.
+
+5️⃣ `Get-Process | Sort-Object CPU -Descending` → El cazador de procesos que devoran tu CPU.
+
+6️⃣ `Get-EventLog System -Newest 20` → El detective del sistema. Localiza errores críticos recientes.
+
+7️⃣ `ipconfig /flushdns` → Limpia la caché DNS. Soluciona cortes de red.
+
+8️⃣ `Stop-Process -Name explorer` → Reinicia la barra de tareas congelada sin reiniciar el equipo.
+
+💡PRO TIP:Ejecuta el 1, 2, 7 y 8 seguidos. 
+Es el “reset exprés” definitivo.
+
+🔍 ¿Cuál no conocías? ¿Has probado alguno de estos?
+
+👇 Te leo en comentarios.
+
+
+
+
+
+
+# 1. Configurar sistema
+python setup_database.py
+
+# 2. Migrar conversaciones existentes (opcional)
+python migrate_to_database.py
+
+# 3. Probar el agente
+python main.py start

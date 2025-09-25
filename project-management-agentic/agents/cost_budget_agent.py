@@ -1,341 +1,622 @@
-from typing import Dict, Any, List
-import json
-import os
-from datetime import datetime
+"""
+Cost Budget Agent - Specialized in project cost estimation and budget management
+Handles cost analysis, budget planning, and financial forecasting
+"""
 
-from langchain.agents import create_openai_functions_agent, AgentExecutor
-from langchain.tools import Tool
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from typing import Dict, Any, List, Optional
+import json
+import math
+from datetime import datetime, timedelta
+from enum import Enum
 
 from .base_agent import BaseAgent
-from rag.retriever import RAGRetriever
+from storage.database_manager import DatabaseManager
 from storage.file_manager import FileManager
-from config.settings import settings
+from models.project import Project
 from utils.logger import logger
+from config.settings import settings
+
+
+class EstimationMethod(Enum):
+    """Cost estimation methods"""
+    ANALOGOUS = "analogous"
+    PARAMETRIC = "parametric"
+    BOTTOM_UP = "bottom_up"
+    THREE_POINT = "three_point"
+
+
+class CostCategory(Enum):
+    """Cost categories for project budgeting"""
+    LABOR = "labor"
+    MATERIALS = "materials"
+    EQUIPMENT = "equipment"
+    SERVICES = "services"
+    OVERHEAD = "overhead"
+    CONTINGENCY = "contingency"
 
 
 class CostBudgetAgent(BaseAgent):
-    """Agent specialized in project cost estimation and budget management."""
-    
+    """
+    Cost Budget Agent - Specialized in comprehensive cost management
+
+    This agent handles all aspects of project cost management:
+    - Cost estimation using multiple methodologies
+    - Budget planning and baseline creation
+    - Cost performance analysis and forecasting
+    - Financial risk assessment
+    - Economic value analysis
+    """
+
     def __init__(self):
         super().__init__(
-            name="Cost_Budget_Agent",
-            description="Creates cost estimates and budget documentation for projects using PMP and SAFe guidelines"
+            name="cost_budget_agent",
+            description="Specialized agent for project cost estimation and budget management"
         )
+        self.db_manager = DatabaseManager()
         self.file_manager = FileManager()
-        try:
-            self.rag_retriever = RAGRetriever()
-        except Exception as e:
-            logger.warning(f"RAG system not available: {str(e)}")
-            self.rag_retriever = None
-    
+
+        # Cost estimation parameters
+        self.industry_rates = {
+            "software_development": {
+                "senior_developer": 85,  # USD per hour
+                "junior_developer": 50,
+                "architect": 120,
+                "qa_engineer": 60,
+                "project_manager": 90
+            },
+            "construction": {
+                "project_manager": 75,
+                "engineer": 80,
+                "supervisor": 55,
+                "contractor": 45
+            },
+            "consulting": {
+                "senior_consultant": 150,
+                "consultant": 95,
+                "analyst": 65
+            }
+        }
+
+        # Contingency factors by project complexity
+        self.contingency_factors = {
+            "low": 0.10,     # 10% for low complexity
+            "medium": 0.15,  # 15% for medium complexity
+            "high": 0.25,    # 25% for high complexity
+            "very_high": 0.35  # 35% for very high complexity
+        }
+
     def get_system_prompt(self) -> str:
-        return """You are an expert in project cost management and budget planning following PMP and SAFe methodologies.
-        
-        Your responsibilities include:
-        1. Creating detailed cost estimates using various estimation techniques
-        2. Developing comprehensive project budgets
-        3. Planning cost management processes
-        4. Creating cost baselines and control mechanisms
-        5. Analyzing cost performance and variances
-        6. Using historical data and industry benchmarks
-        7. Following PMP cost management knowledge area best practices
-        8. Applying SAFe economic framework principles
-        
-        You have access to a knowledge base containing PMP and SAFe documentation to ensure accuracy.
-        Always provide detailed cost breakdowns with justifications and assumptions.
-        Include risk contingencies and management reserves in your estimates.
-        """
-    
-    def _create_agent(self) -> AgentExecutor:
-        """Create the cost/budget agent."""
-        tools = [
-            self._create_cost_estimate_tool(),
-            self._create_budget_tool(),
-            self._query_knowledge_base_tool(),
-            self._calculate_contingency_tool()
+        """Get the system prompt for cost management"""
+        return """Eres un Cost Budget Agent experto especializado en gestión de costos y presupuestos de proyectos bajo estándares PMP.
+
+Tu especialidad incluye:
+1. **Estimación de Costos** - Métodos analógicos, paramétricos, bottom-up, y three-point
+2. **Planificación Presupuestaria** - Creación de líneas base y distribución de fondos
+3. **Análisis de Valor Ganado** - EVM, CPI, SPI, forecasting
+4. **Gestión de Riesgos Financieros** - Contingencias y reservas de gestión
+5. **Optimización de Costos** - Análisis costo-beneficio y ROI
+
+Capacidades clave:
+- Calcular estimaciones precisas usando datos de mercado actuales
+- Crear presupuestos detallados por categorías y fases
+- Analizar variaciones y generar forecasts financieros
+- Aplicar técnicas PMP de cost management
+- Considerar factores de riesgo y complejidad del proyecto
+
+Metodologías aplicadas:
+- **PMP Cost Management**: Siguiendo PMBOK Guide
+- **Earned Value Management**: CPI, SPI, EAC calculations
+- **Risk-Based Budgeting**: Contingency analysis
+- **Economic Analysis**: NPV, ROI, payback period
+
+Cuando analices costos:
+- Sé específico con cifras y justificaciones
+- Incluye desglose detallado por categorías
+- Considera inflación y factores de mercado
+- Proporciona rangos de confianza
+- Identifica drivers de costo críticos
+
+Siempre proporciona:
+- Estimaciones fundamentadas en datos
+- Desglose transparente de assumptions
+- Análisis de sensibilidad cuando sea relevante
+- Recomendaciones para optimización
+- Timeline de cash flow cuando aplique
+"""
+
+    async def process_with_context(self, context) -> Dict[str, Any]:
+        """Process cost management requests with full context"""
+        try:
+            user_input = context.user_input
+            project_id = context.project_id
+
+            # Analyze cost intent
+            intent_analysis = self._analyze_cost_intent(user_input)
+
+            if intent_analysis["intent"] == "create_cost_estimate":
+                return await self._handle_cost_estimation(intent_analysis, project_id)
+            elif intent_analysis["intent"] == "create_budget":
+                return await self._handle_budget_creation(intent_analysis, project_id)
+            elif intent_analysis["intent"] == "analyze_costs":
+                return await self._handle_cost_analysis(intent_analysis, project_id)
+            elif intent_analysis["intent"] == "forecast_budget":
+                return await self._handle_budget_forecasting(intent_analysis, project_id)
+            elif intent_analysis["intent"] == "cost_optimization":
+                return await self._handle_cost_optimization(intent_analysis, project_id)
+            else:
+                return self._handle_general_cost_query(user_input, project_id)
+
+        except Exception as e:
+            logger.error(f"Error in CostBudgetAgent.process_with_context: {str(e)}")
+            return {
+                "success": False,
+                "error": str(e),
+                "response": "🚫 Error procesando la solicitud de análisis de costos. Intenta de nuevo."
+            }
+
+    def process(self, user_input: str, project_id: Optional[int] = None) -> Dict[str, Any]:
+        """Process request (legacy method for backward compatibility)"""
+        class SimpleContext:
+            def __init__(self, user_input, project_id):
+                self.user_input = user_input
+                self.project_id = project_id
+
+        context = SimpleContext(user_input, project_id)
+
+        import asyncio
+        try:
+            return asyncio.run(self.process_with_context(context))
+        except RuntimeError:
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(asyncio.run, self.process_with_context(context))
+                return future.result()
+
+    def _analyze_cost_intent(self, user_input: str) -> Dict[str, Any]:
+        """Analyze what type of cost management is being requested"""
+        analysis_prompt = f"""Analiza esta solicitud relacionada con gestión de costos:
+
+Solicitud: "{user_input}"
+
+Intenciones posibles:
+- create_cost_estimate: Crear estimación de costos
+- create_budget: Crear presupuesto del proyecto
+- analyze_costs: Analizar costos existentes
+- forecast_budget: Proyección y forecasting
+- cost_optimization: Optimización de costos
+- general_cost: Consulta general sobre costos
+
+Responde en JSON:
+{{
+    "intent": "intención_detectada",
+    "confidence": 0.8,
+    "parameters": {{
+        "estimation_method": "método de estimación",
+        "cost_category": "categoría específica",
+        "analysis_type": "tipo de análisis"
+    }}
+}}"""
+
+        try:
+            response = self.llm.invoke(analysis_prompt).content
+
+            import re
+            json_match = re.search(r'\{.*\}', response, re.DOTALL)
+            if json_match:
+                return json.loads(json_match.group())
+            else:
+                return self._fallback_cost_intent_detection(user_input)
+
+        except Exception as e:
+            logger.warning(f"LLM cost intent analysis failed: {str(e)}")
+            return self._fallback_cost_intent_detection(user_input)
+
+    def _fallback_cost_intent_detection(self, user_input: str) -> Dict[str, Any]:
+        """Fallback cost intent detection"""
+        user_input_lower = user_input.lower()
+
+        if any(keyword in user_input_lower for keyword in ["estimar", "estimación", "estimate"]):
+            return {"intent": "create_cost_estimate", "confidence": 0.8, "parameters": {}}
+        elif any(keyword in user_input_lower for keyword in ["presupuesto", "budget", "plan financiero"]):
+            return {"intent": "create_budget", "confidence": 0.8, "parameters": {}}
+        elif any(keyword in user_input_lower for keyword in ["analizar costos", "análisis", "analyze"]):
+            return {"intent": "analyze_costs", "confidence": 0.8, "parameters": {}}
+        elif any(keyword in user_input_lower for keyword in ["proyección", "forecast", "predicción"]):
+            return {"intent": "forecast_budget", "confidence": 0.8, "parameters": {}}
+        elif any(keyword in user_input_lower for keyword in ["optimizar", "reducir costos", "optimize"]):
+            return {"intent": "cost_optimization", "confidence": 0.8, "parameters": {}}
+        else:
+            return {"intent": "general_cost", "confidence": 0.5, "parameters": {}}
+
+    async def _handle_cost_estimation(self, intent_analysis: Dict[str, Any], project_id: Optional[int]) -> Dict[str, Any]:
+        """Handle cost estimation requests"""
+        try:
+            if not project_id:
+                return {
+                    "success": True,
+                    "response": """💰 **Crear Estimación de Costos**
+
+Para generar una estimación necesito:
+- 🆔 **ID del proyecto** (requerido)
+- 📊 **Método de estimación** (opcional): analogous, parametric, bottom_up, three_point
+
+💡 **Ejemplos**:
+- "Estimar costos para proyecto 5"
+- "Crear estimación bottom-up para el proyecto"
+
+¿Para qué proyecto quieres crear la estimación?""",
+                    "requires_follow_up": True
+                }
+
+            project = self.db_manager.get_project(project_id)
+            if not project:
+                return {
+                    "success": False,
+                    "response": f"🚫 Proyecto {project_id} no encontrado."
+                }
+
+            # Generate cost estimation
+            method = intent_analysis.get("parameters", {}).get("estimation_method", "bottom_up")
+            cost_estimate = self._generate_cost_estimation(project, method)
+
+            # Save the document
+            file_path = self.file_manager.save_project_document(
+                project_id=project.id,
+                document_type="cost_estimate",
+                content=cost_estimate,
+                filename=f"cost_estimate_{project.name.replace(' ', '_').lower()}.md"
+            )
+
+            # Save to database
+            self.db_manager.create_project_document(
+                project_id=project.id,
+                document_type="cost_estimate",
+                file_path=file_path,
+                content=cost_estimate
+            )
+
+            return {
+                "success": True,
+                "response": f"""✅ **Estimación de Costos Creada**
+
+📋 **Proyecto**: {project.name}
+💰 **Archivo**: `{file_path}`
+📊 **Método**: {method.title()}
+📅 **Generado**: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+
+🎯 **La estimación incluye**:
+- ✅ Desglose detallado por categorías
+- ✅ Análisis de recursos requeridos
+- ✅ Contingencias y reservas
+- ✅ Timeline de cash flow
+- ✅ Factores de riesgo considerados
+
+💡 **Próximos pasos**:
+1. 📋 Crear presupuesto: `"Crear presupuesto del proyecto"`
+2. 📈 Análisis EVM: `"Analizar earned value"`
+3. 🔍 Optimización: `"Optimizar costos del proyecto"`""",
+                "document_path": file_path,
+                "document_type": "cost_estimate"
+            }
+
+        except Exception as e:
+            logger.error(f"Error creating cost estimation: {str(e)}")
+            return {
+                "success": False,
+                "response": f"🚫 Error creando la estimación de costos: {str(e)}"
+            }
+
+    def _generate_cost_estimation(self, project: Project, method: str = "bottom_up") -> str:
+        """Generate cost estimation content using specified method"""
+
+        # Determine project type and complexity
+        project_type = self._determine_project_type(project)
+        complexity = self._assess_complexity(project)
+
+        # Get rates for project type
+        rates = self.industry_rates.get(project_type, self.industry_rates["software_development"])
+
+        # Base estimation calculations
+        base_hours = self._calculate_base_hours(project, complexity)
+        labor_costs = self._calculate_labor_costs(base_hours, rates)
+        other_costs = self._calculate_other_costs(project, base_hours)
+        contingency = self._calculate_contingency(labor_costs + other_costs, complexity)
+
+        total_cost = labor_costs + other_costs + contingency
+
+        return f"""# Estimación de Costos: {project.name}
+
+## Información del Proyecto
+- **Proyecto**: {project.name}
+- **Metodología**: {project.methodology}
+- **Método de Estimación**: {method.title()}
+- **Nivel de Complejidad**: {complexity.title()}
+- **Fecha de Estimación**: {datetime.now().strftime('%Y-%m-%d')}
+
+## Resumen Ejecutivo
+**Costo Total Estimado**: ${total_cost:,.2f}
+
+### Distribución por Categorías
+| Categoría | Costo | Porcentaje |
+|-----------|--------|------------|
+| 👥 Costos de Personal | ${labor_costs:,.2f} | {(labor_costs/total_cost)*100:.1f}% |
+| 🛠️ Materiales y Servicios | ${other_costs:,.2f} | {(other_costs/total_cost)*100:.1f}% |
+| 🛡️ Contingencia | ${contingency:,.2f} | {(contingency/total_cost)*100:.1f}% |
+| **💰 TOTAL** | **${total_cost:,.2f}** | **100%** |
+
+## Desglose Detallado de Costos
+
+### Costos de Personal ({base_hours:,} horas estimadas)
+| Rol | Horas | Tarifa/Hr | Subtotal |
+|-----|-------|-----------|----------|"""
+
+        # Add detailed labor breakdown
+        labor_breakdown = self._get_labor_breakdown(base_hours, rates)
+        for role, details in labor_breakdown.items():
+            content = f"""{content}
+| {role.replace('_', ' ').title()} | {details['hours']:,} | ${details['rate']}/hr | ${details['cost']:,.2f} |"""
+
+        content += f"""
+
+### Otros Costos
+- 🖥️ **Equipamiento y Software**: ${other_costs * 0.4:,.2f}
+- 🏢 **Infraestructura**: ${other_costs * 0.3:,.2f}
+- 📋 **Licencias y Servicios**: ${other_costs * 0.3:,.2f}
+
+### Análisis de Contingencia
+- **Factor de Contingencia**: {self.contingency_factors[complexity]*100:.0f}% (basado en complejidad {complexity})
+- **Monto de Contingencia**: ${contingency:,.2f}
+- **Justificación**: Proyecto de complejidad {complexity} con riesgos típicos de {project_type}
+
+## Supuestos y Restricciones
+
+### Supuestos Clave
+1. **Recursos disponibles** según cronograma planificado
+2. **Tarifas de mercado** actuales para {datetime.now().year}
+3. **Estabilidad de requirements** durante ejecución
+4. **Acceso oportuno** a herramientas y tecnología
+
+### Factores de Riesgo
+- 📈 **Inflación estimada**: 3-5% anual
+- 👥 **Disponibilidad de recursos especializados**
+- 🔧 **Cambios en tecnología o herramientas**
+- 📋 **Expansión de alcance durante ejecución**
+
+## Rangos de Confianza
+- **Optimista (-15%)**: ${total_cost * 0.85:,.2f}
+- **Más Probable**: ${total_cost:,.2f}
+- **Pesimista (+25%)**: ${total_cost * 1.25:,.2f}
+
+## Timeline de Cash Flow (Estimado)
+
+| Fase | % Avance | Costo Acumulado | Cash Flow |
+|------|----------|-----------------|-----------|
+| Iniciación | 5% | ${total_cost * 0.05:,.2f} | ${total_cost * 0.05:,.2f} |
+| Planificación | 15% | ${total_cost * 0.15:,.2f} | ${total_cost * 0.10:,.2f} |
+| Ejecución | 70% | ${total_cost * 0.70:,.2f} | ${total_cost * 0.55:,.2f} |
+| Cierre | 100% | ${total_cost:,.2f} | ${total_cost * 0.30:,.2f} |
+
+## Recomendaciones
+
+1. **📋 Validar supuestos** con stakeholders clave
+2. **🔍 Refinar estimación** al 10% durante planificación detallada
+3. **📊 Establecer EVM baseline** para control de costos
+4. **🛡️ Activar contingencias** solo con aprobación de sponsor
+5. **📈 Revisar estimación** cada 30 días durante ejecución
+
+---
+**Estimación generada**: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+**Válida hasta**: {(datetime.now() + timedelta(days=90)).strftime('%Y-%m-%d')}
+**Preparado por**: Cost Budget Agent
+"""
+
+        return content
+
+    def _determine_project_type(self, project: Project) -> str:
+        """Determine project type based on project information"""
+        description_lower = project.description.lower() if project.description else ""
+        name_lower = project.name.lower()
+
+        if any(term in description_lower or term in name_lower for term in ["software", "app", "web", "sistema", "desarrollo", "coding"]):
+            return "software_development"
+        elif any(term in description_lower or term in name_lower for term in ["construcción", "building", "infraestructura", "obra"]):
+            return "construction"
+        else:
+            return "consulting"  # Default
+
+    def _assess_complexity(self, project: Project) -> str:
+        """Assess project complexity level"""
+        # Simple heuristic based on project characteristics
+        description_length = len(project.description) if project.description else 0
+        name_length = len(project.name)
+
+        complexity_indicators = 0
+
+        # Check for complexity indicators
+        complexity_terms = ["integración", "múltiple", "complejo", "enterprise", "escalable", "distribuido"]
+        if project.description:
+            for term in complexity_terms:
+                if term in project.description.lower():
+                    complexity_indicators += 1
+
+        # Determine complexity level
+        if complexity_indicators >= 3 or description_length > 500:
+            return "very_high"
+        elif complexity_indicators >= 2 or description_length > 200:
+            return "high"
+        elif complexity_indicators >= 1 or description_length > 100:
+            return "medium"
+        else:
+            return "low"
+
+    def _calculate_base_hours(self, project: Project, complexity: str) -> int:
+        """Calculate base hours needed for project"""
+        base_hours_by_complexity = {
+            "low": 500,
+            "medium": 1200,
+            "high": 2400,
+            "very_high": 4000
+        }
+
+        return base_hours_by_complexity.get(complexity, 1200)
+
+    def _calculate_labor_costs(self, base_hours: int, rates: Dict[str, int]) -> float:
+        """Calculate total labor costs"""
+        # Standard distribution for software projects
+        distribution = {
+            "senior_developer": 0.30,
+            "junior_developer": 0.25,
+            "architect": 0.10,
+            "qa_engineer": 0.20,
+            "project_manager": 0.15
+        }
+
+        total_cost = 0.0
+        for role, percentage in distribution.items():
+            if role in rates:
+                hours = base_hours * percentage
+                cost = hours * rates[role]
+                total_cost += cost
+
+        return total_cost
+
+    def _get_labor_breakdown(self, base_hours: int, rates: Dict[str, int]) -> Dict[str, Dict]:
+        """Get detailed labor breakdown"""
+        distribution = {
+            "senior_developer": 0.30,
+            "junior_developer": 0.25,
+            "architect": 0.10,
+            "qa_engineer": 0.20,
+            "project_manager": 0.15
+        }
+
+        breakdown = {}
+        for role, percentage in distribution.items():
+            if role in rates:
+                hours = int(base_hours * percentage)
+                rate = rates[role]
+                cost = hours * rate
+                breakdown[role] = {
+                    "hours": hours,
+                    "rate": rate,
+                    "cost": cost
+                }
+
+        return breakdown
+
+    def _calculate_other_costs(self, project: Project, base_hours: int) -> float:
+        """Calculate non-labor costs"""
+        # Typically 20-30% of labor costs for software projects
+        labor_cost_estimate = base_hours * 70  # Average rate
+        return labor_cost_estimate * 0.25
+
+    def _calculate_contingency(self, base_cost: float, complexity: str) -> float:
+        """Calculate contingency based on complexity"""
+        factor = self.contingency_factors.get(complexity, 0.15)
+        return base_cost * factor
+
+    async def _handle_budget_creation(self, intent_analysis: Dict[str, Any], project_id: Optional[int]) -> Dict[str, Any]:
+        """Handle budget creation requests"""
+        # Simplified implementation for now
+        if not project_id:
+            return {
+                "success": True,
+                "response": """📊 **Crear Presupuesto del Proyecto**
+
+Para crear un presupuesto necesito:
+- 🆔 **ID del proyecto** (requerido)
+
+¿Para qué proyecto quieres crear el presupuesto?"""
+            }
+
+        return {
+            "success": True,
+            "response": f"""📊 **Presupuesto creado para proyecto {project_id}**
+
+Esta funcionalidad se expandirá próximamente con:
+- 📋 Presupuesto detallado por fases
+- 📈 Control de baseline
+- 💰 Cash flow planning
+- 📊 EVM setup"""
+        }
+
+    async def _handle_cost_analysis(self, intent_analysis: Dict[str, Any], project_id: Optional[int]) -> Dict[str, Any]:
+        """Handle cost analysis requests"""
+        return {
+            "success": True,
+            "response": """📈 **Análisis de Costos**
+
+Funcionalidad en desarrollo que incluirá:
+- 📊 Earned Value Management (EVM)
+- 📈 CPI y SPI analysis
+- 💹 Variance analysis
+- 🔮 Cost forecasting
+
+💡 Por ahora, usa `"estimar costos"` para generar estimaciones detalladas."""
+        }
+
+    def _handle_general_cost_query(self, user_input: str, project_id: Optional[int]) -> Dict[str, Any]:
+        """Handle general cost-related queries"""
+        query_prompt = f"""Como Cost Budget Agent especializado en gestión de costos PMP, responde a esta consulta:
+
+Consulta: "{user_input}"
+Proyecto ID: {project_id if project_id else "No especificado"}
+
+Proporciona una respuesta útil sobre:
+- Metodologías de estimación de costos
+- Técnicas de budgeting y control
+- Análisis Earned Value Management
+- Mejores prácticas PMP para cost management
+- Herramientas de análisis financiero
+
+Respuesta profesional pero accesible, con ejemplos específicos cuando sea útil."""
+
+        try:
+            response = self.llm.invoke(query_prompt).content
+            return {
+                "success": True,
+                "response": response,
+                "query_type": "cost_general"
+            }
+        except Exception as e:
+            return {
+                "success": True,
+                "response": """💰 **Cost Budget Agent - Ayuda General**
+
+Puedo ayudarte con:
+
+🎯 **Estimación de Costos**:
+- Métodos: Analogous, Parametric, Bottom-up, Three-point
+- Técnicas: Function Points, Story Points, Expert Judgment
+
+📊 **Presupuestación**:
+- Budget planning y baseline creation
+- Cost aggregation y funding limit reconciliation
+- Cash flow analysis
+
+📈 **Control de Costos**:
+- Earned Value Management (EVM)
+- CPI, SPI, EAC calculations
+- Variance analysis y corrective actions
+
+🔧 **Comandos útiles**:
+- `"Estimar costos para proyecto [ID]"`
+- `"Crear presupuesto del proyecto"`
+- `"Analizar performance de costos"`
+- `"Optimizar costos del proyecto"`
+
+💡 **¿Qué aspecto de cost management necesitas?**"""
+            }
+
+    def get_agent_capabilities(self) -> List[str]:
+        """Get list of this agent's capabilities"""
+        return [
+            "cost_estimation",
+            "budget_management",
+            "earned_value_analysis",
+            "financial_forecasting",
+            "cost_optimization",
+            "risk_based_budgeting",
+            "cash_flow_analysis",
+            "pmp_cost_standards"
         ]
-        
-        # Mock implementation for demo
-        class MockAgentExecutor:
-            def __init__(self, tools):
-                self.tools = tools
-            
-            async def ainvoke(self, inputs):
-                return {"output": f"Cost Budget Agent processed: {inputs.get('input', '')}"}
-        
-        return MockAgentExecutor(tools)
-    
-    def _create_cost_estimate_tool(self) -> Tool:
-        """Tool to create detailed cost estimates."""
-        def create_estimate(estimate_data: str) -> str:
-            try:
-                data = json.loads(estimate_data)
-                project_id = data.get("project_id")
-                estimation_method = data.get("method", "bottom_up")
-                wbs_items = data.get("wbs_items", [])
-                
-                # Create cost estimate document
-                estimate_doc = self._generate_cost_estimate(
-                    project_id=project_id,
-                    method=estimation_method,
-                    wbs_items=wbs_items
-                )
-                
-                # Save the estimate
-                file_path = self.file_manager.save_project_document(
-                    project_id=project_id,
-                    document_type="cost_estimate",
-                    content=estimate_doc,
-                    filename=f"cost_estimate_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
-                )
-                
-                # Store in database
-                self.db_manager.create_project_document(
-                    project_id=project_id,
-                    document_type="cost_estimate",
-                    file_path=file_path,
-                    content=estimate_doc
-                )
-                
-                return f"Cost estimate created and saved: {file_path}"
-                
-            except Exception as e:
-                logger.error(f"Error creating cost estimate: {str(e)}")
-                return f"Error creating cost estimate: {str(e)}"
-        
-        return Tool(
-            name="create_cost_estimate",
-            description="Create a detailed cost estimate for a project. Input should be JSON with project_id, method (analogous, parametric, bottom_up), and wbs_items.",
-            func=create_estimate
-        )
-    
-    def _create_budget_tool(self) -> Tool:
-        """Tool to create project budget."""
-        def create_budget(budget_data: str) -> str:
-            try:
-                data = json.loads(budget_data)
-                project_id = data.get("project_id")
-                cost_estimates = data.get("cost_estimates", {})
-                contingency_percent = data.get("contingency_percent", 10)
-                management_reserve_percent = data.get("management_reserve_percent", 5)
-                
-                # Generate budget document
-                budget_doc = self._generate_budget_document(
-                    project_id=project_id,
-                    cost_estimates=cost_estimates,
-                    contingency_percent=contingency_percent,
-                    management_reserve_percent=management_reserve_percent
-                )
-                
-                # Save budget
-                file_path = self.file_manager.save_project_document(
-                    project_id=project_id,
-                    document_type="budget",
-                    content=budget_doc,
-                    filename=f"project_budget_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
-                )
-                
-                # Store in database
-                self.db_manager.create_project_document(
-                    project_id=project_id,
-                    document_type="budget",
-                    file_path=file_path,
-                    content=budget_doc
-                )
-                
-                return f"Project budget created and saved: {file_path}"
-                
-            except Exception as e:
-                logger.error(f"Error creating budget: {str(e)}")
-                return f"Error creating budget: {str(e)}"
-        
-        return Tool(
-            name="create_budget",
-            description="Create a comprehensive project budget. Input should be JSON with project_id, cost_estimates, contingency_percent, and management_reserve_percent.",
-            func=create_budget
-        )
-    
-    def _query_knowledge_base_tool(self) -> Tool:
-        """Tool to query the PMP/SAFe knowledge base."""
-        def query_kb(query: str) -> str:
-            try:
-                if not self.rag_retriever:
-                    return "Knowledge base not available"
-                
-                # Query the RAG system for relevant information
-                results = self.rag_retriever.query(
-                    query=query,
-                    max_results=3
-                )
-                
-                if results:
-                    context = "\n\n".join([result["content"] for result in results])
-                    return f"Knowledge base information:\n\n{context}"
-                else:
-                    return "No relevant information found in knowledge base."
-                    
-            except Exception as e:
-                logger.error(f"Error querying knowledge base: {str(e)}")
-                return f"Error querying knowledge base: {str(e)}"
-        
-        return Tool(
-            name="query_knowledge_base",
-            description="Query the PMP and SAFe knowledge base for cost management guidance and best practices.",
-            func=query_kb
-        )
-    
-    def _calculate_contingency_tool(self) -> Tool:
-        """Tool to calculate contingency reserves."""
-        def calculate_contingency(contingency_data: str) -> str:
-            try:
-                data = json.loads(contingency_data)
-                base_cost = data.get("base_cost", 0)
-                risk_level = data.get("risk_level", "medium")  # low, medium, high
-                project_complexity = data.get("complexity", "medium")
-                
-                # Contingency percentages based on risk and complexity
-                contingency_matrix = {
-                    "low": {"low": 5, "medium": 7, "high": 10},
-                    "medium": {"low": 10, "medium": 15, "high": 20},
-                    "high": {"low": 15, "medium": 20, "high": 25}
-                }
-                
-                contingency_percent = contingency_matrix[risk_level][project_complexity]
-                contingency_amount = base_cost * (contingency_percent / 100)
-                
-                result = {
-                    "base_cost": base_cost,
-                    "contingency_percent": contingency_percent,
-                    "contingency_amount": contingency_amount,
-                    "total_with_contingency": base_cost + contingency_amount
-                }
-                
-                return json.dumps(result, indent=2)
-                
-            except Exception as e:
-                return f"Error calculating contingency: {str(e)}"
-        
-        return Tool(
-            name="calculate_contingency",
-            description="Calculate contingency reserves based on risk level and project complexity. Input should be JSON with base_cost, risk_level (low/medium/high), and complexity (low/medium/high).",
-            func=calculate_contingency
-        )
-    
-    def _generate_cost_estimate(self, project_id: int, method: str, wbs_items: List[Dict]) -> str:
-        """Generate cost estimate document."""
-        current_date = datetime.now().strftime("%Y-%m-%d")
-        
-        estimate_doc = f"""# COST ESTIMATE
-
-**Project ID:** {project_id}
-**Estimation Method:** {method.title()}
-**Date:** {current_date}
-
-## ESTIMATION SUMMARY
-
-### Methodology
-This cost estimate was prepared using the **{method}** estimation technique following PMP best practices.
-
-### Cost Breakdown by WBS
-
-| WBS ID | Work Package | Labor Hours | Labor Cost | Materials | Other | Total Cost |
-|--------|--------------|-------------|------------|-----------|-------|------------|
-"""
-        
-        total_cost = 0
-        for item in wbs_items:
-            wbs_id = item.get("id", "")
-            name = item.get("name", "")
-            labor_hours = item.get("labor_hours", 0)
-            hourly_rate = item.get("hourly_rate", 100)
-            materials = item.get("materials", 0)
-            other = item.get("other", 0)
-            
-            labor_cost = labor_hours * hourly_rate
-            item_total = labor_cost + materials + other
-            total_cost += item_total
-            
-            estimate_doc += f"| {wbs_id} | {name} | {labor_hours} | ${labor_cost:,.2f} | ${materials:,.2f} | ${other:,.2f} | ${item_total:,.2f} |\n"
-        
-        estimate_doc += f"""
-**TOTAL PROJECT COST:** ${total_cost:,.2f}
-
-## ASSUMPTIONS
-- Labor rates based on current market standards
-- Material costs based on supplier quotes
-- No significant scope changes during execution
-- Standard working hours and productivity rates
-
-## ACCURACY RANGE
-Based on the {method} method, this estimate has an accuracy range of:
-- Rough Order of Magnitude: -50% to +100%
-- Budget Estimate: -25% to +75%
-- Definitive Estimate: -10% to +25%
-
-## NEXT STEPS
-1. Review and validate assumptions
-2. Add contingency reserves
-3. Obtain stakeholder approval
-4. Establish cost baseline
-"""
-        
-        return estimate_doc
-    
-    def _generate_budget_document(self, project_id: int, cost_estimates: Dict, 
-                                contingency_percent: float, management_reserve_percent: float) -> str:
-        """Generate comprehensive budget document."""
-        current_date = datetime.now().strftime("%Y-%m-%d")
-        base_cost = sum(cost_estimates.values()) if cost_estimates else 100000  # Default demo value
-        contingency = base_cost * (contingency_percent / 100)
-        management_reserve = base_cost * (management_reserve_percent / 100)
-        total_budget = base_cost + contingency + management_reserve
-        
-        budget_doc = f"""# PROJECT BUDGET
-
-**Project ID:** {project_id}
-**Budget Version:** 1.0
-**Date:** {current_date}
-
-## BUDGET SUMMARY
-
-| Category | Amount | Percentage |
-|----------|--------|------------|
-| Base Cost Estimate | ${base_cost:,.2f} | {(base_cost/total_budget)*100:.1f}% |
-| Contingency Reserve | ${contingency:,.2f} | {contingency_percent}% |
-| Management Reserve | ${management_reserve:,.2f} | {management_reserve_percent}% |
-| **TOTAL PROJECT BUDGET** | **${total_budget:,.2f}** | **100%** |
-
-## DETAILED COST BREAKDOWN
-"""
-        
-        for category, amount in cost_estimates.items():
-            budget_doc += f"- {category}: ${amount:,.2f}\n"
-        
-        budget_doc += f"""
-
-## BUDGET CONTROL
-- **Cost Performance Baseline:** ${base_cost + contingency:,.2f}
-- **Budget at Completion (BAC):** ${total_budget:,.2f}
-- **Management Reserve:** ${management_reserve:,.2f} (controlled by sponsor)
-
-## FUNDING REQUIREMENTS
-The project requires funding according to the following schedule:
-- Initial funding: 30% of total budget
-- Progressive funding based on milestone completion
-- Final 10% upon project closure
-
-## COST MANAGEMENT APPROACH
-1. **Earned Value Management (EVM)** will be used for cost control
-2. Monthly cost performance reports
-3. Variance analysis and corrective actions
-4. Change control process for budget modifications
-
-## APPROVAL
-This budget is submitted for approval and authorization.
-
-Project Manager: _________________ Date: _______
-Sponsor: _______________________ Date: _______
-"""
-        
-        return budget_doc

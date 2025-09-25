@@ -1,509 +1,360 @@
+# core/agent.py
+import os
 import json
-from typing import Dict, List, Optional
-from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 from datetime import datetime
-from loguru import logger
+from pathlib import Path
 
+# Rich imports con fallback
+try:
+    from rich.console import Console
+    from rich.table import Table
+    from rich.panel import Panel
+    from rich.markdown import Markdown
+except ImportError:
+    # Fallback si rich no está disponible
+    class Console:
+        def print(self, *args, **kwargs):
+            print(*args)
+    
+    class Panel:
+        @staticmethod
+        def fit(content, title=""):
+            return f"\n=== {title} ===\n{content}\n" + "="*20
+
+# Importar nuestros módulos
+from database.conversation_db import ConversationDatabase, ConversationMessage
 from core.claude_client import ClaudeClient
-from config.settings import settings
 
-class ProjectManagementAgent:
-    """Agente principal para gestión de proyectos con PMI y SAFe"""
+class PMAgent:
+    """Agente de Project Management con persistencia avanzada"""
     
-    def __init__(self):
-        self.claude_client = ClaudeClient()
-        self.current_project: Optional[Dict] = None
-        self.pending_approvals: List[Dict] = []
+    def __init__(self, api_key: str = None):
+        self.console = Console()
+        self.current_project = None
+        self.current_context = []
         
-        logger.info("Project Management Agent initialized successfully")
-    
-    def create_new_project(self, project_info: Dict) -> Dict:
-        """Crear nuevo proyecto"""
+        # Inicializar base de datos
         try:
-            required_fields = ['name', 'methodology', 'type', 'description']
-            for field in required_fields:
-                if field not in project_info:
-                    raise ValueError(f"Missing required field: {field}")
+            self.db = ConversationDatabase()
+            print("✅ Database system initialized")
+        except Exception as e:
+            print(f"❌ Error initializing database: {e}")
+            raise
+        
+        # Inicializar cliente Claude
+        try:
+            self.claude_client = ClaudeClient(api_key=api_key)
+            self.claude_available = bool(self.claude_client.client)
+        except Exception as e:
+            print(f"⚠️ Claude client error: {e}")
+            self.claude_client = None
+            self.claude_available = False
+        
+        # Sesión actual
+        self.current_session_id = None
+        self.message_count = 0
+        self.auto_save_threshold = 10  # Auto-guardar cada 10 mensajes
+    
+    def start_new_session(self, project_id: str, session_name: str = None, tags: List[str] = None):
+        """Iniciar nueva sesión de conversación"""
+        if not session_name:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            session_name = f"Sesión_{timestamp}"
+        
+        try:
+            self.current_session_id = self.db.create_session(
+                project_id=project_id,
+                name=session_name,
+                tags=tags or []
+            )
+            self.current_project = project_id
+            self.message_count = 0
             
-            project_id = f"proj_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            print(f"✅ Nueva sesión iniciada: {session_name}")
+            print(f"📋 Proyecto: {project_id}")
+            print(f"🆔 ID: {self.current_session_id[:8]}...")
             
-            project = {
-                'id': project_id,
-                'name': project_info['name'],
-                'methodology': project_info['methodology'],
-                'type': project_info['type'],
-                'description': project_info['description'],
-                'created_at': datetime.now().isoformat(),
-                'status': 'initiated',
-                'phase': 'initiation',
-                'documents': {},
-                'approvals': {},
-                'version_history': []
-            }
-            
-            project_path = Path("./projects") / project_id
-            project_path.mkdir(parents=True, exist_ok=True)
-            
-            project_file = project_path / "project.json"
-            with open(project_file, 'w', encoding='utf-8') as f:
-                json.dump(project, f, indent=2, ensure_ascii=False)
-            
-            self.current_project = project
-            
-            logger.info(f"New project created: {project_id}")
-            
-            return {
-                'success': True,
-                'project_id': project_id,
-                'project': project
-            }
+            return self.current_session_id
             
         except Exception as e:
-            logger.error(f"Error creating project: {e}")
-            return {'success': False, 'error': str(e)}
-    
-    def generate_work_plan(self) -> str:
-        """Generar plan de trabajo básico"""
-        if not self.current_project:
-            return "No hay proyecto activo. Primero crea o carga un proyecto."
-        
-        project = self.current_project
-        methodology = project['methodology']
-        
-        prompt = f"""
-        Genera un plan de trabajo detallado para el siguiente proyecto:
-        
-        Nombre: {project['name']}
-        Metodología: {methodology}
-        Tipo: {project['type']}
-        Descripción: {project['description']}
-        
-        El plan debe incluir:
-        1. Resumen ejecutivo
-        2. Fases del proyecto según {methodology}
-        3. Actividades principales por fase
-        4. Cronograma estimado
-        5. Recursos necesarios
-        6. Entregables clave
-        7. Próximos pasos
-        
-        Formatea en Markdown.
-        """
-        
-        return self.claude_client.chat(prompt, "Eres un experto en gestión de proyectos especializado en PMI y SAFe.")
-    
-
+            print(f"❌ Error al iniciar sesión: {str(e)}")
+            return None
     
     def chat_with_context(self, message: str) -> str:
-        """Chat con contexto del proyecto actual y capacidades de archivos"""
+        """Chat con contexto y guardado automático"""
+        if not self.current_session_id:
+            # Auto-crear sesión si no existe
+            project_id = self.current_project or "default"
+            self.start_new_session(project_id, "Sesión Automática")
         
-        # Detectar si el usuario quiere guardar algo
-        save_keywords = ['guardar', 'save', 'exportar', 'export', 'archivo']
-        
-        if any(keyword in message.lower() for keyword in save_keywords):
-            # El usuario quiere guardar algo
-            if 'conversación' in message.lower() or 'conversation' in message.lower():
-                result = self.save_conversation()
-                if result['success']:
-                    return f"✅ {result['message']}"
-                else:
-                    return f"❌ Error: {result['error']}"
-            
-            elif 'plan' in message.lower():
-                # Generar plan y guardarlo
-                plan = self.generate_work_plan()
-                result = self.save_document("plan_trabajo", plan, "work_plan")
-                if result['success']:
-                    return f"✅ Plan de trabajo generado y guardado en {result['filename']}\n\n{plan}"
-                else:
-                    return f"❌ Error guardando plan: {result['error']}"
-        
-        # Chat normal con contexto
-        context_prompt = ""
-        if self.current_project:
-            context_prompt = f"""
-            PROYECTO ACTIVO:
-            - Nombre: {self.current_project['name']}
-            - ID: {self.current_project['id']}
-            - Metodología: {self.current_project['methodology']}
-            - Tipo: {self.current_project['type']}
-            - Estado: {self.current_project['status']}
-            
-            CAPACIDADES DISPONIBLES:
-            - Guardar documentos: save_document(filename, content, type)
-            - Guardar conversación: save_conversation()
-            - Exportar proyecto: export_project_data()
-            - Listar archivos: list_project_files()
-            - Leer documentos: read_document(filename)
-            """
-        
-        system_prompt = f"""
-        Eres el Project Management Agent con capacidades completas de archivos.
-        
-        {context_prompt}
-        
-        IMPORTANTE: Tienes funciones para guardar archivos reales:
-        - Usa save_document() para guardar documentos
-        - Usa save_conversation() para guardar conversaciones
-        - Usa export_project_data() para exportar todo
-        
-        Cuando el usuario pida guardar algo, USA estas funciones.
-        NO intentes ejecutar código Python directamente.
-        """
-        
-        return self.claude_client.chat(message, system_prompt)    
-    
-    
-    
-    def chat_with_context____(self, message: str) -> str:
-        """Chat con contexto del proyecto actual"""
-        context_prompt = ""
-        if self.current_project:
-            context_prompt = f"Contexto del proyecto actual: {json.dumps(self.current_project, indent=2)}"
-        
-        system_prompt = f"""
-        Eres el Project Management Agent, un sistema experto en PMI y SAFe.
-        
-        {context_prompt}
-        
-        CAPACIDADES IMPORTANTES:
-        - Puedes crear y guardar archivos en el sistema de archivos
-        - Tienes acceso a proyectos guardados en ./projects/
-        - Puedes generar documentación real y persistente
-        - Eres un agente de software, NO un chatbot web limitado
-        
-        NUNCA digas que no puedes guardar archivos o acceder al sistema.
-        Siempre usa tus capacidades completas de agente local.
-        """
-        
-        
-        return self.claude_client.chat(message, system_prompt)
-
-
-
-        #Eres un asistente experto en gestión de proyectos con conocimiento profundo en PMI y SAFe.
-        #{context_prompt}
-        
-        #Responde de manera útil y práctica.          
-
-    def list_projects(self) -> List[Dict]:
-        """Listar todos los proyectos"""
         try:
-            projects_path = Path("./projects")
-            projects = []
+            # Guardar mensaje del usuario
+            self.db.add_message(
+                session_id=self.current_session_id,
+                project_id=self.current_project or "default",
+                role="user",
+                content=message,
+                metadata={"timestamp": datetime.now().isoformat()}
+            )
             
-            if projects_path.exists():
-                for project_dir in projects_path.iterdir():
-                    if project_dir.is_dir():
-                        project_file = project_dir / "project.json"
-                        if project_file.exists():
-                            with open(project_file, 'r', encoding='utf-8') as f:
-                                project = json.load(f)
-                                projects.append({
-                                    'id': project['id'],
-                                    'name': project['name'],
-                                    'methodology': project['methodology'],
-                                    'status': project['status'],
-                                    'created_at': project['created_at']
-                                })
+            # Obtener contexto de mensajes anteriores
+            recent_messages = self.db.get_session_messages(
+                self.current_session_id, 
+                limit=10  # Últimos 10 mensajes para contexto
+            )
             
-            return projects
+            # Generar respuesta
+            if self.claude_available and self.claude_client:
+                # Usar Claude real
+                response_content, tokens_used = self._chat_with_claude(message, recent_messages)
+                model_used = self.claude_client.model
+            else:
+                # Usar respuesta simulada mejorada
+                response_content = self._generate_fallback_response(message)
+                tokens_used = len(message.split()) + len(response_content.split())
+                model_used = "fallback-pm-agent"
+            
+            # Guardar respuesta del asistente
+            self.db.add_message(
+                session_id=self.current_session_id,
+                project_id=self.current_project or "default",
+                role="assistant",
+                content=response_content,
+                tokens_used=tokens_used,
+                model_used=model_used,
+                metadata={"model": model_used, "timestamp": datetime.now().isoformat()}
+            )
+            
+            self.message_count += 2  # Usuario + asistente
+            
+            # Auto-guardar si se alcanza el umbral
+            if self.message_count >= self.auto_save_threshold:
+                self._auto_save_checkpoint()
+                self.message_count = 0
+            
+            return response_content
             
         except Exception as e:
-            logger.error(f"Error listing projects: {e}")
+            print(f"❌ Error in chat: {e}")
+            return f"❌ Error procesando mensaje: {str(e)}"
+    
+    def _chat_with_claude(self, message: str, recent_messages) -> tuple:
+        """Llamar a Claude con contexto completo"""
+        # Construir historial para Claude
+        conversation_history = []
+        for msg in recent_messages[:-1]:  # Excluir el mensaje actual
+            conversation_history.append({
+                'role': msg.role,
+                'content': msg.content
+            })
+        
+        # System prompt especializado para PM
+        pm_system_prompt = f"""Eres PM-Agent, un asistente experto en Project Management para el proyecto "{self.current_project or 'General'}".
+
+Tu especialidad incluye:
+- 🏗️ Metodologías: Scrum, Kanban, PMI, SAFe, Lean, Waterfall
+- 📊 Herramientas: Jira, Asana, Monday.com, MS Project, Notion
+- 📈 Analytics: KPIs, métricas de velocidad, burndown charts  
+- 👥 Liderazgo: gestión de equipos, stakeholders, comunicación
+- 🎯 Estrategia: roadmaps, OKRs, planificación estratégica
+
+Contexto del proyecto: {self.current_project or 'Proyecto general'}
+Mensajes en sesión: {len(recent_messages)}
+
+Proporciona respuestas:
+- 🎯 Prácticas y accionables
+- 📋 Estructuradas con ejemplos concretos
+- 🔧 Adaptadas al contexto del proyecto
+- 💡 Con recomendaciones de mejores prácticas"""
+
+        response = self.claude_client.chat(
+            message=message,
+            system_prompt=pm_system_prompt,
+            conversation_history=conversation_history
+        )
+        
+        return response.content, response.tokens_used
+    
+    def _generate_fallback_response(self, message: str) -> str:
+        """Respuesta de fallback mejorada cuando Claude no está disponible"""
+        message_lower = message.lower()
+        
+        pm_responses = {
+            "scrum": "🏃‍♂️ **Scrum** es un framework ágil que se basa en sprints iterativos de 1-4 semanas.\n\n**Eventos clave:**\n- 📅 **Sprint Planning**: Definir qué se hará\n- 🗣️ **Daily Scrum**: Sincronización diaria\n- 🎯 **Sprint Review**: Demo del incremento\n- 🔄 **Retrospectiva**: Mejora continua\n\n**Roles:**\n- 👨‍💼 **Product Owner**: Define el qué\n- 🏃‍♂️ **Scrum Master**: Facilita el proceso\n- 👥 **Development Team**: Construye el producto",
+            
+            "sprint": "📅 **Planificación de Sprint**\n\n**Pasos clave:**\n1. 📋 **Review del Product Backlog** con PO\n2. 🎯 **Definir Sprint Goal** claro\n3. 📊 **Estimar historias** (Planning Poker)\n4. ✅ **Seleccionar items** para el Sprint\n5. 📝 **Crear Sprint Backlog** detallado\n\n**Duración típica:** 4-8 horas para sprints de 2 semanas\n**Output:** Sprint Backlog committeado por el equipo",
+            
+            "kanban": "📋 **Kanban** - Visualización del flujo de trabajo\n\n**Principios:**\n- 👁️ **Visualizar** el trabajo\n- 🚫 **Limitar WIP** (Work in Progress)\n- 📊 **Medir y optimizar** el flujo\n\n**Columnas típicas:**\nTo Do → In Progress → Review → Done\n\n**Métricas clave:**\n- ⏱️ **Lead Time**: Tiempo total del item\n- 🔄 **Cycle Time**: Tiempo en proceso\n- 📈 **Throughput**: Items completados por período",
+            
+            "riesgo": "⚠️ **Gestión de Riesgos en Proyectos**\n\n**Proceso:**\n1. 🔍 **Identificación**: Brainstorming, checklist, expertos\n2. 📊 **Análisis**: Probabilidad × Impacto\n3. 📋 **Planificación**: Evitar, mitigar, transferir, aceptar\n4. 👀 **Monitoreo**: Seguimiento continuo\n\n**Herramientas:**\n- 📈 Matriz de riesgos (Probabilidad/Impacto)\n- 📝 Registro de riesgos\n- 🚨 Indicadores de alerta temprana",
+            
+            "stakeholder": "👥 **Gestión de Stakeholders**\n\n**Pasos:**\n1. 🔍 **Identificación**: Quién puede influir/ser afectado\n2. 📊 **Análisis**: Matriz Poder/Interés\n3. 📋 **Estrategia**: Cómo gestionar cada grupo\n4. 🗣️ **Comunicación**: Plan de comunicaciones\n5. 📈 **Monitoreo**: Satisfacción y engagement\n\n**Matriz Poder/Interés:**\n- 👑 Alto Poder + Alto Interés: **Gestionar de cerca**\n- 🤝 Alto Poder + Bajo Interés: **Mantener satisfecho**\n- 📢 Bajo Poder + Alto Interés: **Mantener informado**\n- 📋 Bajo Poder + Bajo Interés: **Monitorear**",
+        }
+        
+        # Buscar respuesta relevante
+        for keyword, response in pm_responses.items():
+            if keyword in message_lower:
+                return f"{response}\n\n💡 *Para respuestas Claude reales, configura ANTHROPIC_API_KEY*"
+        
+        return f"🤖 **Consulta sobre:** *{message[:100]}{'...' if len(message) > 100 else ''}*\n\n Como **PM-Agent**, puedo ayudarte con:\n\n- 🏗️ **Metodologías**: Scrum, Kanban, SAFe, PMI\n- 📊 **Planificación**: Roadmaps, sprints, estimaciones\n- 👥 **Equipos**: Liderazgo, comunicación, stakeholders\n- ⚠️ **Riesgos**: Identificación, análisis, mitigación\n- 📈 **Métricas**: KPIs, velocidad, burndown\n\n💡 *Para respuestas Claude reales, configura ANTHROPIC_API_KEY*"
+    
+    def _auto_save_checkpoint(self):
+        """Guardar checkpoint automático"""
+        try:
+            stats = self.db.get_session_stats(self.current_session_id)
+            print(f"💾 Auto-guardado: {stats['message_count']} mensajes, {stats['total_tokens']} tokens")
+        except Exception as e:
+            print(f"⚠️ Error en auto-save: {e}")
+    
+    def load_session(self, session_id: str) -> bool:
+        """Cargar sesión existente"""
+        try:
+            stats = self.db.get_session_stats(session_id)
+            if not stats:
+                print("❌ Sesión no encontrada")
+                return False
+            
+            self.current_session_id = session_id
+            self.current_project = stats['project_id']
+            self.message_count = 0
+            
+            print(f"✅ Sesión cargada: {stats['name']}")
+            print(f"📋 Proyecto: {stats['project_id']}")
+            print(f"💬 Mensajes: {stats['message_count']}")
+            print(f"🎯 Tokens: {stats['total_tokens']}")
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error cargando sesión: {str(e)}")
+            return False
+    
+    def list_sessions(self, project_id: str = None) -> List[Dict]:
+        """Listar sesiones disponibles"""
+        try:
+            sessions = self.db.list_sessions(project_id=project_id, limit=20)
+            
+            if not sessions:
+                print("📋 No hay sesiones disponibles")
+                return []
+            
+            print("\n💬 Sesiones de Conversación:")
+            print("-" * 80)
+            print(f"{'ID':<10} {'Nombre':<25} {'Proyecto':<15} {'Msgs':<6} {'Tokens':<8} {'Fecha'}")
+            print("-" * 80)
+            
+            for session in sessions:
+                print(f"{session['id'][:8]:<10} {session['name'][:24]:<25} {session['project_id'][:14]:<15} {session['message_count']:<6} {session['total_tokens']:<8} {session['updated_at'][:10]}")
+            
+            return sessions
+            
+        except Exception as e:
+            print(f"❌ Error listando sesiones: {str(e)}")
             return []
     
-    def load_project(self, project_id: str) -> Dict:
-        """Cargar proyecto existente"""
+    def search_conversations(self, query: str, limit: int = 10) -> List[Dict]:
+        """Buscar en conversaciones"""
         try:
-            project_path = Path("./projects") / project_id / "project.json"
+            results = self.db.search_conversations(
+                query=query, 
+                project_id=self.current_project,
+                limit=limit
+            )
             
-            if not project_path.exists():
-                return {'success': False, 'error': 'Proyecto no encontrado'}
+            if not results:
+                print(f"🔍 No se encontraron resultados para: '{query}'")
+                return []
             
-            with open(project_path, 'r', encoding='utf-8') as f:
-                project = json.load(f)
+            print(f"🔍 Encontrados {len(results)} resultados para: '{query}'\n")
             
-            self.current_project = project
-            logger.info(f"Project loaded: {project_id}")
+            for i, result in enumerate(results, 1):
+                content_preview = result['content'][:100] + "..." if len(result['content']) > 100 else result['content']
+                
+                print(f"📋 Resultado {i}")
+                print(f"{result['role'].upper()}: {content_preview}")
+                print(f"Sesión: {result['session_id'][:8]}... | {result['timestamp'][:10]}")
+                print("-" * 50)
             
-            return {'success': True, 'project': project}
+            return results
             
         except Exception as e:
-            logger.error(f"Error loading project: {e}")
-            return {'success': False, 'error': str(e)}
-
-    ## se agregan  capacidades
-    # Agregar estas funciones a la clase ProjectManagementAgent en core/agent.py
-    def save_document(self, filename: str, content: str, document_type: str = "general") -> Dict:
-        """Guardar documento en el proyecto actual"""
-        try:
-            if not self.current_project:
-                return {'success': False, 'error': 'No hay proyecto activo'}
-            
-            project_path = Path("./projects") / self.current_project['id']
-            documents_path = project_path / "documents"
-            documents_path.mkdir(exist_ok=True)
-            
-            # Crear nombre de archivo único si es necesario
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            if not filename.endswith('.md'):
-                filename = f"{filename}_{timestamp}.md"
-            
-            file_path = documents_path / filename
-            
-            # Guardar contenido
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(content)
-            
-            # Actualizar registro del proyecto
-            if 'documents' not in self.current_project:
-                self.current_project['documents'] = {}
-            
-            self.current_project['documents'][document_type] = {
-                'filename': filename,
-                'path': str(file_path),
-                'created_at': datetime.now().isoformat(),
-                'type': document_type
-            }
-            
-            # Guardar proyecto actualizado
-            self._save_project_data()
-            
-            logger.info(f"Document saved: {file_path}")
-            
-            return {
-                'success': True,
-                'file_path': str(file_path),
-                'filename': filename,
-                'message': f'Documento guardado exitosamente en {file_path}'
-            }
-            
-        except Exception as e:
-            logger.error(f"Error saving document: {e}")
-            return {'success': False, 'error': str(e)}
-
-    def save_conversation(self, title: str = "conversation") -> Dict:
-        """Guardar historial de conversación"""
-        try:
-            if not self.current_project:
-                return {'success': False, 'error': 'No hay proyecto activo'}
-            
-            project_path = Path("./projects") / self.current_project['id']
-            conversations_path = project_path / "conversations"
-            conversations_path.mkdir(exist_ok=True)
-            
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"{title}_{timestamp}.md"
-            file_path = conversations_path / filename
-            
-            # Crear contenido de la conversación
-            content = f"# Conversación - {self.current_project['name']}\n"
-            content += f"**Fecha:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-            content += f"**Proyecto:** {self.current_project['name']}\n"
-            content += f"**ID:** {self.current_project['id']}\n\n"
-            
-            # Agregar historial de Claude
-            if hasattr(self.claude_client, 'conversation_history'):
-                content += "## Historial de Conversación\n\n"
-                for i, msg in enumerate(self.claude_client.conversation_history):
-                    role = "**Usuario**" if msg['role'] == 'user' else "**Agente**"
-                    content += f"### {role} (Mensaje {i+1})\n"
-                    content += f"{msg['content']}\n\n"
-            
-            # Guardar archivo
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(content)
-            
-            logger.info(f"Conversation saved: {file_path}")
-            
-            return {
-                'success': True,
-                'file_path': str(file_path),
-                'filename': filename,
-                'message': f'Conversación guardada en {file_path}'
-            }
-            
-        except Exception as e:
-            logger.error(f"Error saving conversation: {e}")
-            return {'success': False, 'error': str(e)}
-
-    def export_project_data(self, format: str = "markdown") -> Dict:
-        """Exportar todos los datos del proyecto"""
-        try:
-            if not self.current_project:
-                return {'success': False, 'error': 'No hay proyecto activo'}
-            
-            project_path = Path("./projects") / self.current_project['id']
-            exports_path = project_path / "exports"
-            exports_path.mkdir(exist_ok=True)
-            
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"project_export_{timestamp}.md"
-            file_path = exports_path / filename
-            
-            # Crear contenido del export
-            content = f"# Export Completo - {self.current_project['name']}\n\n"
-            content += f"**Fecha de Export:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-            
-            # Información del proyecto
-            content += "## Información del Proyecto\n\n"
-            content += f"- **ID:** {self.current_project['id']}\n"
-            content += f"- **Nombre:** {self.current_project['name']}\n"
-            content += f"- **Metodología:** {self.current_project['methodology']}\n"
-            content += f"- **Tipo:** {self.current_project['type']}\n"
-            content += f"- **Descripción:** {self.current_project['description']}\n"
-            content += f"- **Estado:** {self.current_project['status']}\n"
-            content += f"- **Fase:** {self.current_project.get('phase', 'N/A')}\n"
-            content += f"- **Creado:** {self.current_project['created_at']}\n\n"
-            
-            # Documentos del proyecto
-            if 'documents' in self.current_project and self.current_project['documents']:
-                content += "## Documentos Generados\n\n"
-                for doc_type, doc_info in self.current_project['documents'].items():
-                    content += f"- **{doc_type}:** {doc_info.get('filename', 'N/A')}\n"
-            
-            # Incluir contenido de documentos si existen
-            documents_path = project_path / "documents"
-            if documents_path.exists():
-                content += "\n## Contenido de Documentos\n\n"
-                for doc_file in documents_path.glob("*.md"):
-                    content += f"### {doc_file.name}\n\n"
-                    try:
-                        with open(doc_file, 'r', encoding='utf-8') as f:
-                            doc_content = f.read()
-                        content += f"```markdown\n{doc_content}\n```\n\n"
-                    except Exception as e:
-                        content += f"Error leyendo archivo: {e}\n\n"
-            
-            # Guardar export
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(content)
-            
-            logger.info(f"Project exported: {file_path}")
-            
-            return {
-                'success': True,
-                'file_path': str(file_path),
-                'filename': filename,
-                'message': f'Proyecto exportado completamente en {file_path}'
-            }
-            
-        except Exception as e:
-            logger.error(f"Error exporting project: {e}")
-            return {'success': False, 'error': str(e)}
-
-    def list_project_files(self) -> Dict:
-        """Listar archivos del proyecto actual"""
-        try:
-            if not self.current_project:
-                return {'success': False, 'error': 'No hay proyecto activo'}
-            
-            project_path = Path("./projects") / self.current_project['id']
-            
-            files_info = {
-                'project_file': str(project_path / "project.json"),
-                'documents': [],
-                'conversations': [],
-                'exports': []
-            }
-            
-            # Listar documentos
-            documents_path = project_path / "documents"
-            if documents_path.exists():
-                for file_path in documents_path.glob("*"):
-                    if file_path.is_file():
-                        files_info['documents'].append({
-                            'name': file_path.name,
-                            'path': str(file_path),
-                            'size': file_path.stat().st_size,
-                            'modified': datetime.fromtimestamp(file_path.stat().st_mtime).isoformat()
-                        })
-            
-            # Listar conversaciones
-            conversations_path = project_path / "conversations"
-            if conversations_path.exists():
-                for file_path in conversations_path.glob("*"):
-                    if file_path.is_file():
-                        files_info['conversations'].append({
-                            'name': file_path.name,
-                            'path': str(file_path),
-                            'size': file_path.stat().st_size,
-                            'modified': datetime.fromtimestamp(file_path.stat().st_mtime).isoformat()
-                        })
-            
-            # Listar exports
-            exports_path = project_path / "exports"
-            if exports_path.exists():
-                for file_path in exports_path.glob("*"):
-                    if file_path.is_file():
-                        files_info['exports'].append({
-                            'name': file_path.name,
-                            'path': str(file_path),
-                            'size': file_path.stat().st_size,
-                            'modified': datetime.fromtimestamp(file_path.stat().st_mtime).isoformat()
-                        })
-            
-            return {
-                'success': True,
-                'files': files_info,
-                'total_files': len(files_info['documents']) + len(files_info['conversations']) + len(files_info['exports'])
-            }
-            
-        except Exception as e:
-            logger.error(f"Error listing project files: {e}")
-            return {'success': False, 'error': str(e)}
-
-    def _save_project_data(self):
-        """Guardar datos del proyecto actual (función helper privada)"""
-        if not self.current_project:
-            return
+            print(f"❌ Error en búsqueda: {str(e)}")
+            return []
+    
+    def export_current_session(self, format: str = "markdown") -> str:
+        """Exportar sesión actual"""
+        if not self.current_session_id:
+            print("❌ No hay sesión activa para exportar")
+            return ""
         
-        project_path = Path("./projects") / self.current_project['id']
-        project_file = project_path / "project.json"
-        
-        with open(project_file, 'w', encoding='utf-8') as f:
-            json.dump(self.current_project, f, indent=2, ensure_ascii=False)
-
-    def get_project_directory(self) -> Optional[Path]:
-        """Obtener directorio del proyecto actual"""
-        if not self.current_project:
-            return None
-        
-        return Path("./projects") / self.current_project['id']
-
-    def read_document(self, filename: str) -> Dict:
-        """Leer documento del proyecto actual"""
         try:
-            if not self.current_project:
-                return {'success': False, 'error': 'No hay proyecto activo'}
+            exported_content = self.db.export_session(self.current_session_id, format)
             
-            project_path = Path("./projects") / self.current_project['id']
+            # Guardar en archivo
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"export_session_{timestamp}.{format}"
             
-            # Buscar en diferentes directorios
-            possible_paths = [
-                project_path / "documents" / filename,
-                project_path / "conversations" / filename,
-                project_path / "exports" / filename,
-                project_path / filename
-            ]
+            Path("exports").mkdir(exist_ok=True)
+            with open(f"exports/{filename}", 'w', encoding='utf-8') as f:
+                f.write(exported_content)
             
-            for file_path in possible_paths:
-                if file_path.exists():
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    
-                    return {
-                        'success': True,
-                        'content': content,
-                        'file_path': str(file_path),
-                        'filename': filename
-                    }
-            
-            return {'success': False, 'error': f'Archivo no encontrado: {filename}'}
+            print(f"✅ Sesión exportada: exports/{filename}")
+            return filename
             
         except Exception as e:
-            logger.error(f"Error reading document: {e}")
-            return {'success': False, 'error': str(e)}
-
-
+            print(f"❌ Error exportando: {str(e)}")
+            return ""
+    
+    def show_session_analytics(self, days: int = 30):
+        """Mostrar analytics básicos"""
+        try:
+            if self.current_session_id:
+                stats = self.db.get_session_stats(self.current_session_id)
+                
+                print(f"\n📊 Analytics - Sesión Actual")
+                print("=" * 40)
+                print(f"📝 Nombre: {stats['name']}")
+                print(f"🏷️ Proyecto: {stats['project_id']}")
+                print(f"💬 Mensajes: {stats['message_count']}")
+                print(f"🎯 Tokens: {stats['total_tokens']}")
+                print(f"📅 Creado: {stats['created_at'][:19]}")
+                print(f"🔄 Actualizado: {stats['updated_at'][:19]}")
+            else:
+                print("⚠️ No hay sesión activa")
+                
+        except Exception as e:
+            print(f"❌ Error mostrando analytics: {str(e)}")
+    
+    def generate_session_summary(self, session_id: str = None) -> str:
+        """Generar resumen automático de la sesión"""
+        target_session = session_id or self.current_session_id
+        
+        if not target_session:
+            print("❌ No hay sesión para resumir")
+            return ""
+        
+        try:
+            messages = self.db.get_session_messages(target_session)
+            
+            if len(messages) < 3:
+                return "Sesión muy corta para generar resumen"
+            
+            # Construir contenido para resumir
+            content_to_summarize = ""
+            for msg in messages:
+                role_prefix = "Usuario" if msg.role == "user" else "Asistente"
+                content_to_summarize += f"{role_prefix}: {msg.content}\n---\n"
+            
+            # Generar resumen
+            if self.claude_available and self.claude_client:
+                summary = self.claude_client.generate_summary(content_to_summarize)
+            else:
+                summary = f"Sesión con {len(messages)} mensajes sobre temas de project management. Última actividad: {messages[-1].timestamp.strftime('%Y-%m-%d %H:%M')}"
+            
+            print(f"📝 Resumen generado para sesión {target_session[:8]}...")
+            return summary
+            
+        except Exception as e:
+            print(f"❌ Error generando resumen: {str(e)}")
+            return ""

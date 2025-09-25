@@ -29,20 +29,13 @@ console = Console()
 
 class PMPSystem:
     """Main PMP Multi-Agent System class."""
-
+    
     def __init__(self):
         self.workflow_manager = WorkflowManager()
         self.agent_factory = AgentFactory()
         self.rag_retriever = RAGRetriever()
         self.db_manager = DatabaseManager()
-
-        # Context management for chat sessions
-        self.session_context = {
-            "last_project_id": None,
-            "last_project_name": None,
-            "conversation_history": []
-        }
-
+        
         console.print("[green]PMP Multi-Agent System initialized successfully![/green]")
     
     async def create_project(self, name: str, description: str = "", 
@@ -88,62 +81,29 @@ class PMPSystem:
             console.print(f"[red]✗[/red] {error_msg}")
             return {"success": False, "error": error_msg}
     
-    async def chat(self, message: str, agent_type: str = "auto",
+    async def chat(self, message: str, agent_type: str = "auto", 
                   project_id: Optional[int] = None) -> Dict[str, Any]:
-        """Interactive chat with agents using new multi-agent architecture."""
+        """Interactive chat with agents."""
         try:
-            # Use session context if no explicit project_id provided
-            if not project_id and self.session_context["last_project_id"]:
-                project_id = self.session_context["last_project_id"]
-
-            if agent_type == "auto" or agent_type == "multiagent":
-                # Use new orchestrator for intelligent routing
-                result = await self.agent_factory.process_with_orchestrator(
-                    user_input=message,
+            if agent_type == "auto":
+                # Use workflow manager for intelligent routing
+                result = self.workflow_manager.custom_workflow(
+                    input_text=message,
                     project_id=project_id
                 )
-            elif agent_type in ["project_manager_agent", "document_agent", "risk_management_agent", "cost_budget"]:
-                # Use new architecture agents directly
-                agent = self.agent_factory.create_agent(agent_type)
-                result = agent.process(message, project_id)
             else:
-                # Fallback to legacy behavior for backward compatibility
-                if agent_type == "legacy_workflow":
-                    result = self.workflow_manager.custom_workflow(
-                        input_text=message,
-                        project_id=project_id
-                    )
-                else:
-                    # Legacy agent
-                    agent = self.agent_factory.create_agent(agent_type)
-                    result = agent.process(message)
-
+                # Use specific agent
+                agent = self.agent_factory.create_agent(agent_type)
+                result = agent.process(message)
+            
             if result.get("success", True):
                 response = result.get("response", "No response generated")
                 console.print(f"[blue]Assistant:[/blue] {response}")
-
-                # Update session context if a project was created
-                if "project_id" in result:
-                    self.session_context["last_project_id"] = result["project_id"]
-                    if "project_name" in result:
-                        self.session_context["last_project_name"] = result["project_name"]
-
-                # Show coordination info if available (multi-agent)
-                if "coordination" in result:
-                    coordination = result["coordination"]
-                    agents_used = coordination.get("agents_used", [])
-                    if len(agents_used) > 1:
-                        console.print(f"[dim]🤝 Coordination: {', '.join(agents_used)}[/dim]")
-
-                # Show current project context if available
-                if self.session_context["last_project_id"]:
-                    console.print(f"[dim]📋 Current Project: {self.session_context['last_project_name']} (ID: {self.session_context['last_project_id']})[/dim]")
-
             else:
                 console.print(f"[red]Error:[/red] {result.get('error')}")
-
+            
             return result
-
+            
         except Exception as e:
             error_msg = f"Error in chat: {str(e)}"
             console.print(f"[red]✗[/red] {error_msg}")
@@ -284,135 +244,36 @@ def status():
 
 
 @cli.command()
-@click.option('--agent', default='auto', help='Agent type (auto, multiagent, project_manager_agent, document_agent, risk_management_agent, cost_budget, legacy agents)')
+@click.option('--agent', default='auto', help='Agent type (auto, pmp_project, cost_budget, template)')
 @click.option('--project-id', type=int, help='Project ID for context')
 def chat(agent, project_id):
-    """Start interactive chat session with multi-agent support."""
+    """Start interactive chat session."""
     async def _chat():
-        nonlocal agent  # Allow modification of the outer scope variable
         system = PMPSystem()
-
-        # Initialize multi-agent system
-        if agent in ['auto', 'multiagent'] or agent.endswith('_agent'):
-            console.print("[green]🚀 Initializing Multi-Agent System...[/green]")
-            try:
-                multiagent_status = system.agent_factory.create_multiagent_system()
-                active_agents = multiagent_status["orchestrator"]["registered_agents"]
-                console.print(f"[green]✓ {active_agents} specialized agents ready[/green]")
-            except Exception as e:
-                console.print(f"[yellow]Warning: Multi-agent init error: {str(e)}[/yellow]")
-                console.print("[yellow]Falling back to legacy mode[/yellow]")
-                agent = "pmp_project"
-
+        
         console.print("[green]PMP Assistant Chat - Type 'quit' to exit[/green]")
-
-        # Show agent info
-        if agent == "auto":
-            console.print("🤖 [cyan]Mode: Intelligent Agent Orchestration[/cyan]")
-            console.print("💡 The system will automatically route your requests to the best specialist agent")
-        elif agent == "multiagent":
-            console.print("🤝 [cyan]Mode: Multi-Agent Collaboration[/cyan]")
-            console.print("💡 Multiple agents will work together on complex requests")
-        elif agent.endswith('_agent') or agent == "cost_budget":
-            console.print(f"🎯 [cyan]Mode: Direct Agent ({agent})[/cyan]")
-        else:
-            console.print(f"🔧 [cyan]Mode: Legacy Agent ({agent})[/cyan]")
-
+        console.print(f"Agent: {agent}")
         if project_id:
-            console.print(f"📋 Project Context: {project_id}")
-
-        console.print("\n💬 [dim]Try: 'crear proyecto', 'analizar riesgos', 'crear charter', 'ayuda'[/dim]")
-
+            console.print(f"Project Context: {project_id}")
+        
         while True:
             try:
                 message = console.input("\n[bold blue]You:[/bold blue] ")
-
-                if message.lower() in ['quit', 'exit', 'bye', 'salir']:
-                    console.print("[yellow]¡Hasta luego! 👋[/yellow]")
+                
+                if message.lower() in ['quit', 'exit', 'bye']:
+                    console.print("[yellow]Goodbye![/yellow]")
                     break
-
+                
                 if message.strip():
                     await system.chat(message, agent, project_id)
-
+                    
             except KeyboardInterrupt:
                 console.print("\n[yellow]Chat session ended.[/yellow]")
                 break
             except Exception as e:
                 console.print(f"[red]Error: {str(e)}[/red]")
-
+    
     asyncio.run(_chat())
-
-
-@cli.command()
-def multiagent_status():
-    """Show multi-agent system status and capabilities."""
-    try:
-        system = PMPSystem()
-        console.print("[blue]🤖 Multi-Agent System Status[/blue]\n")
-
-        # Initialize and get status
-        status = system.agent_factory.create_multiagent_system()
-
-        # Orchestrator status
-        orchestrator_info = status["orchestrator"]
-        console.print(f"[green]✓ Orchestrator Active[/green]")
-        console.print(f"📊 Registered Agents: {orchestrator_info['registered_agents']}")
-
-        # Show agent details
-        agents_info = orchestrator_info.get("agents", {})
-        if agents_info:
-            console.print("\n🎯 [cyan]Active Specialist Agents:[/cyan]")
-            for agent_name, agent_data in agents_info.items():
-                capabilities = agent_data.get("capabilities", [])
-                console.print(f"  • [bold]{agent_name}[/bold]")
-                for capability in capabilities[:3]:  # Show first 3 capabilities
-                    console.print(f"    - {capability.replace('_', ' ').title()}")
-
-        # Factory status
-        factory_info = status["factory"]
-        console.print(f"\n🏭 [cyan]Agent Factory Status:[/cyan]")
-        console.print(f"  • Total Agent Types: {factory_info['registered_agents']}")
-        console.print(f"  • Active Instances: {factory_info['active_instances']}")
-
-        # Available types
-        available_types = factory_info['available_types']
-        new_agents = [t for t in available_types if t.endswith('_agent')]
-        legacy_agents = [t for t in available_types if not t.endswith('_agent')]
-
-        if new_agents:
-            console.print(f"\n🆕 [green]New Architecture Agents:[/green]")
-            for agent_type in new_agents:
-                console.print(f"  • {agent_type}")
-
-        if legacy_agents:
-            console.print(f"\n🔧 [yellow]Legacy Agents (still supported):[/yellow]")
-            for agent_type in legacy_agents:
-                console.print(f"  • {agent_type}")
-
-        console.print(f"\n💡 [dim]Use 'python main.py chat --agent auto' for intelligent routing[/dim]")
-
-    except Exception as e:
-        console.print(f"[red]Error getting system status: {str(e)}[/red]")
-
-
-@cli.command()
-@click.argument('legacy_agent')
-def migrate(legacy_agent):
-    """Get migration suggestions for legacy agents."""
-    try:
-        system = PMPSystem()
-        suggestion = system.agent_factory.migrate_from_legacy(legacy_agent)
-        console.print(f"[yellow]Migration Suggestion:[/yellow] {suggestion}")
-
-        if "Consider migrating" in suggestion:
-            console.print(f"\n💡 [cyan]Benefits of migration:[/cyan]")
-            console.print("  • Enhanced natural language understanding")
-            console.print("  • Multi-agent coordination capabilities")
-            console.print("  • Improved conversation context")
-            console.print("  • Specialized expertise per domain")
-
-    except Exception as e:
-        console.print(f"[red]Error: {str(e)}[/red]")
 
 
 if __name__ == "__main__":

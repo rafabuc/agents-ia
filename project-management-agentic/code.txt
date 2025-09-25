@@ -1,0 +1,84 @@
+def _process_with_simple_logic(self, input_text: str) -> str:
+        """Process input with simple keyword-based logic until we fix the agent executor."""
+        input_lower = input_text.lower()
+
+        # Detect intent and respond accordingly - ORDER MATTERS: Most specific patterns first
+        if any(keyword in input_lower for keyword in ["crear proyecto", "create project", "nuevo proyecto"]):
+            return self._handle_create_project_request(input_text)
+
+        elif any(keyword in input_lower for keyword in ["guardar charter", "save charter"]):
+            return self._handle_save_charter_request(input_text)
+
+        elif any(keyword in input_lower for keyword in ["guardar wbs", "save wbs"]):
+            return self._handle_save_wbs_request(input_text)
+
+        elif any(keyword in input_lower for keyword in ["guardar risk", "save risk", "guardar riesgo"]):
+            return self._handle_save_risk_request(input_text)
+
+        elif any(keyword in input_lower for keyword in ["listar proyectos", "list projects", "ver proyectos", "proyectos"]):
+            return self._handle_list_projects_request(input_text)
+
+        # Template requests (less specific patterns)
+        elif any(keyword in input_lower for keyword in ["charter", "acta", "project charter"]):
+            template = self._get_project_charter_template()
+            return f"""Aquí tienes la plantilla de Project Charter:\n\n{template}
+
+💾 **Para guardar este charter:**
+Usa: `guardar charter <project_id> <nombre_proyecto>`
+Ejemplo: `guardar charter 3 Mi Proyecto Web`"""
+
+        elif any(keyword in input_lower for keyword in ["wbs", "breakdown structure", "estructura"]):
+            template = self._get_wbs_template()
+            return f"Aquí tienes la plantilla de Work Breakdown Structure (WBS):\n\n{template}"
+
+        elif any(keyword in input_lower for keyword in ["risk", "riesgo", "registro de riesgos"]):
+            template = self._get_risk_register_template()
+            return f"Aquí tienes la plantilla de Registro de Riesgos:\n\n{template}"
+
+        elif any(keyword in input_lower for keyword in ["stakeholder", "interesados", "partes interesadas"]):
+            template = self._get_stakeholder_register_template()
+            return f"Aquí tienes la plantilla de Registro de Stakeholders:\n\n{template}"
+
+        elif any(keyword in input_lower for keyword in ["communication", "comunicación", "plan de comunicación"]):
+            template = self._get_communication_plan_template()
+            return f"Aquí tienes la plantilla de Plan de Comunicación:\n\n{template}"
+
+        elif any(keyword in input_lower for keyword in ["plantilla", "template", "help", "ayuda"]):
+            return """Soy el PMP Project Agent. Puedo ayudarte con:
+
+📋 **Plantillas disponibles:**
+- `charter` - Project Charter (Acta del Proyecto)
+- `wbs` - Work Breakdown Structure (Estructura de Desglose)
+- `risk` - Risk Register (Registro de Riesgos)
+- `stakeholder` - Stakeholder Register (Registro de Partes Interesadas)
+- `communication` - Communication Plan (Plan de Comunicación)
+
+🚀 **Acciones disponibles:**
+- `crear proyecto` - Crear un nuevo proyecto
+- `crear proyecto [nombre]` - Crear proyecto con nombre específico
+- `listar proyectos` - Ver todos los proyectos existentes
+
+💾 **Guardar documentos en archivos locales:**
+- `guardar charter <project_id> <nombre>` - Guardar Project Charter
+- `guardar wbs <project_id> <nombre>` - Guardar WBS
+- `guardar risk <project_id> <nombre>` - Guardar Registro de Riesgos
+
+**Ejemplos:**
+- `guardar charter 3 Mi App Web`
+- `guardar wbs 3 Mi App Web`
+
+¿En qué puedo ayudarte hoy?"""
+
+        else:
+            return f"""Como PMP Project Agent, puedo ayudarte con la gestión de proyectos.
+
+Tu consulta: "{input_text}"
+
+Te sugiero que uses uno de estos comandos:
+- "crear proyecto" - para crear un nuevo proyecto
+- "charter" - para obtener la plantilla de Project Charter
+- "wbs" - para Work Breakdown Structure
+- "risk" - para Registro de Riesgos
+- "ayuda" - para ver todas las opciones disponibles
+
+¿Qué te gustaría hacer específicamente?"""

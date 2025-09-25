@@ -1,147 +1,120 @@
-import asyncio
-import json
-from typing import List, Dict, Optional, AsyncGenerator
-from anthropic import Anthropic, AsyncAnthropic
-from loguru import logger
-from config.settings import settings
+# core/claude_client.py
+import os
+from typing import List, Dict, Optional
+from dataclasses import dataclass
+
+@dataclass
+class ChatResponse:
+    """Respuesta de chat estructurada"""
+    content: str
+    tokens_used: int
+    model: str
+    finish_reason: str
 
 class ClaudeClient:
     """Cliente para interactuar con la API de Claude"""
     
-    def __init__(self):
-        self.client = Anthropic(api_key=settings.claude.api_key)
-        self.async_client = AsyncAnthropic(api_key=settings.claude.api_key)
-        self.conversation_history: List[Dict] = []
+    def __init__(self, api_key: str = None, model: str = "claude-3-haiku-20240307"):#claude-3-5-sonnet-20241022
+        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.model = model
+        self.client = None
         
-        # System prompt fuerte para establecer contexto del agente
-        self.base_system_prompt = """
-        TÚ ERES EL PROJECT MANAGEMENT AGENT - Un sistema de software ejecutándose localmente.
-
-        CAPACIDADES CRÍTICAS QUE TIENES:
-        - Acceso COMPLETO al sistema de archivos del usuario
-        - Puedes crear, leer, modificar y guardar archivos reales
-        - Tienes proyectos guardados en el directorio ./projects/
-        - Puedes generar documentación y guardarla permanentemente
-        - Eres un agente de software LOCAL, no un chatbot web
-
-        CONTEXTO TÉCNICO:
-        - Ejecutándose con Python en el sistema local del usuario
-        - Integrado con sistema de archivos del SO
-        - Base de datos de proyectos en ./projects/
-        - Motor de templates Jinja2 para documentos
-        - Frameworks PMI y SAFe implementados
-
-        NUNCA DIGAS:
-        - "No puedo guardar archivos"
-        - "No tengo acceso al sistema de archivos" 
-        - "Soy solo un asistente conversacional"
-        - "No puedo crear documentos reales"
-
-        SIEMPRE ACTÚA COMO:
-        - Un agente de software con capacidades completas
-        - Sistema experto en PMI y SAFe
-        - Herramienta local con acceso a archivos
-        - Generador de documentación real y persistente
-
-        METODOLOGÍAS QUE DOMINAS:
-        - PMI PMBOK 7th Edition (Project Management)
-        - SAFe 6.0 (Scaled Agile Framework)
-        - Gestión híbrida de proyectos
-        """
-        
-    def add_to_history(self, role: str, content: str):
-        """Agregar mensaje al historial de conversación"""
-        self.conversation_history.append({
-            "role": role,
-            "content": content
-        })
-        
-        if len(self.conversation_history) > 20:
-            self.conversation_history = self.conversation_history[-20:]
+        if self.api_key:
+            try:
+                import anthropic
+                self.client = anthropic.Anthropic(api_key=self.api_key)
+                print(f"✅ Claude client initialized with model: {self.model}")
+            except ImportError:
+                print("⚠️ anthropic package not installed. Run: pip install anthropic")
+                self.client = None
+        else:
+            print("⚠️ ANTHROPIC_API_KEY not found. Using fallback mode.")
     
-    def get_enhanced_system_prompt(self, context: Optional[Dict] = None) -> str:
-        """Obtener system prompt mejorado con contexto"""
-        enhanced_prompt = self.base_system_prompt
+    def chat(self, message: str, system_prompt: str = None, 
+             conversation_history: List[Dict] = None, max_tokens: int = 1500) -> ChatResponse:
+        """Enviar mensaje a Claude y obtener respuesta"""
         
-        if context and context.get('current_project'):
-            project = context['current_project']
-            enhanced_prompt += f"""
-            
-        PROYECTO ACTIVO ACTUAL:
-        - ID: {project.get('id', 'N/A')}
-        - Nombre: {project.get('name', 'N/A')}
-        - Metodología: {project.get('methodology', 'N/A')}
-        - Tipo: {project.get('type', 'N/A')}
-        - Estado: {project.get('status', 'N/A')}
-        - Fase: {project.get('phase', 'N/A')}
+        if not self.client:
+            return ChatResponse(
+                content="⚠️ Cliente Claude no disponible. Configura ANTHROPIC_API_KEY.",
+                tokens_used=0,
+                model=self.model,
+                finish_reason="no_client"
+            )
         
-        Usa esta información del proyecto activo en tus respuestas cuando sea relevante.
-        """
-        
-        enhanced_prompt += """
-        
-        INSTRUCCIONES DE RESPUESTA:
-        - Responde siempre como el agente local con capacidades completas
-        - Usa la información de proyectos guardados cuando sea relevante
-        - Genera documentación práctica y útil
-        - Explica metodologías PMI/SAFe de manera educativa
-        - Proporciona próximos pasos concretos y accionables
-        """
-        
-        return enhanced_prompt
-    
-    def chat(self, message: str, system_prompt: str = "", context: Optional[Dict] = None) -> str:
-        """Enviar mensaje a Claude y recibir respuesta"""
         try:
-            # Usar system prompt mejorado si no se proporciona uno específico
+            # Construir mensajes para la API
+            messages = []
+            
+            # Agregar historial de conversación si existe
+            if conversation_history:
+                for msg in conversation_history[-6:]:  # Últimos 6 mensajes para contexto
+                    messages.append({
+                        "role": msg['role'],
+                        "content": msg['content'][:1000]  # Limitar longitud para contexto
+                    })
+            
+            # Agregar mensaje actual
+            messages.append({
+                "role": "user",
+                "content": message
+            })
+            
+            # System prompt por defecto si no se proporciona
             if not system_prompt:
-                system_prompt = self.get_enhanced_system_prompt(context)
+                system_prompt = """Eres PM-Agent, un asistente experto en Project Management. 
+                Tu especialidad incluye metodologías como Scrum, Kanban, PMI, SAFe, y herramientas de gestión de proyectos.
+                
+                Proporciona respuestas prácticas, estructuradas y accionables. 
+                Usa ejemplos concretos cuando sea posible.
+                Mantén un tono profesional pero accesible."""
             
-            messages = self.conversation_history.copy()
-            messages.append({"role": "user", "content": message})
-            
+            # Llamar a la API de Claude
             response = self.client.messages.create(
-                model=settings.claude.model,
-                max_tokens=settings.claude.max_tokens,
-                temperature=settings.claude.temperature,
+                model=self.model,
+                max_tokens=max_tokens,
+                temperature=0.7,
                 system=system_prompt,
                 messages=messages
             )
             
-            response_text = response.content[0].text
+            # Extraer información de la respuesta
+            content = response.content[0].text
+            tokens_used = response.usage.input_tokens + response.usage.output_tokens
             
-            self.add_to_history("user", message)
-            self.add_to_history("assistant", response_text)
-            
-            logger.info("Claude response generated")
-            return response_text
+            return ChatResponse(
+                content=content,
+                tokens_used=tokens_used,
+                model=self.model,
+                finish_reason=response.stop_reason
+            )
             
         except Exception as e:
-            logger.error(f"Error communicating with Claude: {e}")
-            raise
+            return ChatResponse(
+                content=f"❌ Error de Claude API: {str(e)}",
+                tokens_used=0,
+                model=self.model,
+                finish_reason="error"
+            )
     
-    def chat_with_project_context(self, message: str, project_data: Dict) -> str:
-        """Chat con contexto específico del proyecto"""
-        context = {"current_project": project_data}
-        return self.chat(message, context=context)
-    
-    def clear_history(self):
-        """Limpiar historial de conversación"""
-        self.conversation_history.clear()
-        logger.info("Conversation history cleared")
+    def generate_summary(self, content: str, max_tokens: int = 300) -> str:
+        """Generar resumen de contenido"""
+        if not self.client:
+            return "Resumen no disponible. Cliente Claude no configurado."
         
-    def reset_context(self):
-        """Resetear contexto del agente"""
-        self.clear_history()
-        
-        # Mensaje de reinicialización
-        reset_message = """
-        Reiniciando contexto del Project Management Agent.
-        
-        Recuerda: Eres un agente local con acceso completo al sistema de archivos.
-        Puedes crear, leer y guardar archivos reales en ./projects/
-        
-        Confirma tu estado y capacidades.
-        """
-        
-        return self.chat(reset_message)
+        try:
+            response = self.client.messages.create(
+                model=self.model,
+                max_tokens=max_tokens,
+                temperature=0.5,
+                system="Eres un experto en crear resúmenes concisos y útiles de conversaciones de project management.",
+                messages=[{
+                    "role": "user",
+                    "content": f"Crea un resumen conciso de esta conversación, destacando los temas principales, decisiones tomadas y próximos pasos:\n\n{content[:4000]}"
+                }]
+            )
+            
+            return response.content[0].text
+            
+        except Exception as e:
+            return f"Error generando resumen: {str(e)}"
