@@ -1,0 +1,80 @@
+# Core Framework
+langchain==0.1.0
+langchain-openai==0.0.5
+langchain-anthropic==0.1.1
+langgraph==0.0.20
+langsmith==0.0.77
+
+# Vector Stores
+qdrant-client==1.7.0
+chromadb==0.4.22
+pinecone-client==3.0.0
+
+# Embeddings
+sentence-transformers==2.3.1
+openai==1.10.0
+
+# API Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+websockets==12.0
+python-multipart==0.0.6
+
+# Database
+sqlalchemy==2.0.25
+alembic==1.13.1
+asyncpg==0.29.0
+psycopg2-binary==2.9.9
+
+# Async & Task Queue
+celery==5.3.6
+redis==5.0.1
+kombu==5.3.5
+
+# Document Processing
+pypdf2==3.0.1
+python-docx==1.1.0
+beautifulsoup4==4.12.3
+lxml==5.1.0
+
+# Data & ML
+numpy==1.26.3
+pandas==2.2.0
+scikit-learn==1.4.0
+
+# Monitoring & Observability
+prometheus-client==0.19.0
+opentelemetry-api==1.22.0
+opentelemetry-sdk==1.22.0
+phoenix-arize==2.0.0
+
+# Configuration & Env
+python-dotenv==1.0.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# HTTP Client
+httpx==0.26.0
+aiohttp==3.9.1
+
+# Utilities
+tenacity==8.2.3
+tiktoken==0.5.2
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Testing
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+
+# Development
+black==24.1.1
+ruff==0.1.14
+mypy==1.8.0
+pre-commit==3.6.0
+
+# Notebook (optional)
+jupyter==1.0.0
+ipykernel==6.29.0

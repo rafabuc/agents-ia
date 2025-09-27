@@ -1,0 +1,181 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: english-tutor-postgres
+    environment:
+      POSTGRES_DB: english_tutor
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d english_tutor"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - english-tutor-network
+
+  # Redis Cache & Session Store
+  redis:
+    image: redis:7-alpine
+    container_name: english-tutor-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - english-tutor-network
+
+  # Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: english-tutor-qdrant
+    ports:
+      - "6333:6333"  # HTTP API
+      - "6334:6334"  # gRPC API
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      QDRANT__SERVICE__GRPC_PORT: 6334
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - english-tutor-network
+
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: english-tutor-rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - english-tutor-network
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: english-tutor-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - english-tutor-network
+
+  # Grafana Dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: english-tutor-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - english-tutor-network
+
+  # Backend API (optional - can run locally for development)
+  # backend:
+  #   build:
+  #     context: ../backend
+  #     dockerfile: ../docker/Dockerfile.backend
+  #   container_name: english-tutor-backend
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - DATABASE_URL=postgresql://user:password@postgres:5432/english_tutor
+  #     - REDIS_URL=redis://redis:6379/0
+  #     - QDRANT_URL=http://qdrant:6333
+  #     - CELERY_BROKER_URL=amqp://admin:admin@rabbitmq:5672//
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #     - qdrant
+  #     - rabbitmq
+  #   networks:
+  #     - english-tutor-network
+
+  # Celery Worker (optional - can run locally for development)
+  # celery-worker:
+  #   build:
+  #     context: ../backend
+  #     dockerfile: ../docker/Dockerfile.worker
+  #   container_name: english-tutor-worker
+  #   command: celery -A tasks worker --loglevel=info
+  #   environment:
+  #     - DATABASE_URL=postgresql://user:password@postgres:5432/english_tutor
+  #     - CELERY_BROKER_URL=amqp://admin:admin@rabbitmq:5672//
+  #     - CELERY_RESULT_BACKEND=redis://redis:6379/1
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #     - rabbitmq
+  #   networks:
+  #     - english-tutor-network
+
+  # Celery Beat Scheduler (optional)
+  # celery-beat:
+  #   build:
+  #     context: ../backend
+  #     dockerfile: ../docker/Dockerfile.worker
+  #   container_name: english-tutor-beat
+  #   command: celery -A tasks beat --loglevel=info
+  #   environment:
+  #     - CELERY_BROKER_URL=amqp://admin:admin@rabbitmq:5672//
+  #   depends_on:
+  #     - rabbitmq
+  #   networks:
+  #     - english-tutor-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
+  rabbitmq_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  english-tutor-network:
+    driver: bridge

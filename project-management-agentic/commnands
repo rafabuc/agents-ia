@@ -23,3 +23,6 @@ python main.py demo
 
 # Estado del sistema (sin errores)
 python main.py status
+
+git commit --amend --all
+ git reset --soft HEAD~1

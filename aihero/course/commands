@@ -1,0 +1,85 @@
+uv run jupyter notebook
+
+
+
+What You’ll Learn Over the Next 7 Days
+We'll create a conversational agent that can answer questions about any GitHub repository. Think of it as your personal AI assistant for documentation and code. If you're familiar with DeepWiki, it's similar, but tailored to your GitHub repository.
+
+
+
+For that, we need to:
+
+Download and process data from the repo
+
+Put it inside a search engine
+
+Make the search engine available to our agent
+
+
+
+In the first half of the course, we will focus on data preparation.
+
+
+
+Today, we will do the first part: downloading the data.
+
+ 
+Day 1: Ingest and Index Your Data
+On the first day, we will learn how to download and process data from any GitHub repository.
+
+
+
+We will download the data as a zip archive, process all the text data from there, and make it available for ingestion into a search engine later.
+
+
+
+Today, we will deal with simple cases when documents are not large.
+
+
+
+Tomorrow, we will deal with more complex cases, where documents are large and we also have code.
+
+ 
+1. Environment Setup
+
+
+First, let's prepare the environment. We need Python 3.10 or higher.
+
+
+
+We will use uv as the package manager. If you don't have uv, let's install it:
+
+
+
+pip install uv
+
+Next, create a folder aihero with two subfolders:
+
+course - Here you will reproduce all the examples from this email course
+
+project - Here you will create your own project
+
+Now go to course and run:
+
+
+
+uv init
+uv install requests python-frontmatter
+uv install --dev jupyter    
+
+This will initialize an empty Python project with uv and install multiple libraries:
+
+requests for downloading data from GitHub
+
+python-frontmatter for parsing structured metadata in markdown files
+
+jupyter (in dev mode)
+
+The reason we need Jupyter in dev mode is that it's only used for development and experimentation, not in the final production code.
+
+
+
+Let's start Jupyter:
+
+
+
